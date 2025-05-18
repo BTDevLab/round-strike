@@ -1,4 +1,4 @@
-module github.com/tarikcarvalho08/round-strike
+module github.com/tarikcarvalho08/round-strike/backend
 
 go 1.24.2
 
