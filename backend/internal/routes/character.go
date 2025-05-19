@@ -8,8 +8,9 @@ import (
 
 func RegisterRoutes(r *gin.Engine) {
 	r.GET("/character", handler.GetCharacters)
-	// router.POST("/character", handler.CreateCharacter)
-	// router.GET("/character/:id", handler.GetCharacterByID)
-	// router.DELETE("/character/:id", handler.DeleteCharacter)
+	r.POST("/character", handler.CreateCharacter)
+	r.GET("/character/:id", handler.GetCharacterByID)
+	r.DELETE("/character/:id", handler.DeleteCharacter)
+	r.PUT("/character/:id", handler.UpdateCharacter)
 
 }
