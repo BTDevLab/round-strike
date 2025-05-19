@@ -6,6 +6,7 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -25,5 +26,12 @@ func Connect() {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database with GORM: %v", err)
+	}
+
+	err = DB.AutoMigrate(&models.Character{})
+	if err != nil {
+		log.Fatalf("AutoMigrate failed: %v", err)
+	} else {
+		log.Println("AutoMigrate succeeded")
 	}
 }
