@@ -6,11 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(r *gin.Engine) {
+func CharacterRoutes(r *gin.Engine) {
 	r.GET("/character", handler.GetCharacters)
 	r.POST("/character", handler.CreateCharacter)
 	r.GET("/character/:id", handler.GetCharacterByID)
 	r.DELETE("/character/:id", handler.DeleteCharacter)
 	r.PUT("/character/:id", handler.UpdateCharacter)
-
 }
