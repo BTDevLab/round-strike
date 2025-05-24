@@ -8,12 +8,14 @@ import (
 )
 
 func UserRoutes(r *gin.Engine) {
+	// Public routes
 	r.POST("/users", handler.CreateUser)
 	r.POST("/login", handler.LoginUser)
 
+	// Protected routes
 	auth := r.Group("/users")
 	auth.Use(middleware.AuthMiddleware())
 	{
-		auth.GET("/", handler.GetUsers)
+		auth.GET("", handler.GetUsers)
 	}
 }
