@@ -7,13 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(r *gin.Engine) {
+func UserRoutes(route *gin.Engine) {
+	users := route.Group("/users")
 	// Public routes
-	r.POST("/users", handler.CreateUser)
-	r.POST("/login", handler.LoginUser)
+	users.POST("/users", handler.CreateUser)
+	users.POST("/login", handler.LoginUser)
 
 	// Protected routes
-	auth := r.Group("/users")
+	auth := route.Group("/auth")
 	auth.Use(middleware.AuthMiddleware())
 	{
 		auth.GET("", handler.GetUsers)
