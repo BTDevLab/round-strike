@@ -15,10 +15,9 @@ func UserRoutes(route *gin.Engine) {
 	users.POST("/login", handlers.LoginUser)
 
 	// Protected routes
-	auth := route.Group("/auth")
-	auth.Use(middlewares.AuthMiddleware())
+	users.Use(middlewares.AuthMiddleware())
 	{
-		auth.GET("", handlers.GetUsers)
-		auth.GET("/:id", handlers.GetUserByID)
+		users.GET("", handlers.GetUsers)
+		users.GET("/:id", handlers.GetUserByID)
 	}
 }
