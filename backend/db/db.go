@@ -28,7 +28,10 @@ func Connect() {
 		log.Fatalf("Failed to connect to database with GORM: %v", err)
 	}
 
-	err = DB.AutoMigrate(&models.Character{})
+	err = DB.AutoMigrate(
+		&models.Character{},
+		&models.User{},
+	)
 	if err != nil {
 		log.Fatalf("AutoMigrate failed: %v", err)
 	} else {
