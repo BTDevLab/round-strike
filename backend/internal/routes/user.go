@@ -10,11 +10,11 @@ import (
 func UserRoutes(route *gin.Engine) {
 	users := route.Group("/users")
 
-	// Public routes
-	users.POST("/users", handlers.CreateUser)
+	// Public user routes
 	users.POST("/login", handlers.LoginUser)
+	users.POST("/", handlers.CreateUser)
 
-	// Protected routes
+	// Protected user routes
 	users.Use(middlewares.AuthMiddleware())
 	{
 		users.GET("", handlers.GetUsers)
