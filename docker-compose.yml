@@ -3,8 +3,11 @@ services:
     build:
       context: ./backend
     container_name: round-strike-backend
+    working_dir: /app
     volumes:
       - ./backend:/app
+      - ./backend/.env:/app/.env
+      - ./backend/.air.toml:/app/.air.toml
     ports:
       - "3002:3002"
     environment:
@@ -14,12 +17,18 @@ services:
      - DB_PORT=${DB_PORT}
      - DB_NAME=${DB_NAME}
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mysql:8.0
     container_name: round-strike-db
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: roundstrike_db
@@ -30,3 +39,7 @@ services:
 
 volumes:
   mysql-data:
+
+networks:
+  round-strike-network:
+    driver: bridge
