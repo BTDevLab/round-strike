@@ -11,12 +11,12 @@ func CharacterRoutes(route *gin.Engine) {
 	characters := route.Group("/characters")
 
 	// Public character routes
-	characters.GET("/", handlers.GetCharacters)
+	characters.GET("", handlers.GetCharacters)
 
 	// Protected character routes
 	characters.Use(middlewares.AuthMiddleware())
 	{
-		characters.POST("/", handlers.CreateCharacter)
+		characters.POST("", handlers.CreateCharacter)
 		characters.GET("/:id", handlers.GetCharacterByID)
 		characters.DELETE("/:id", handlers.DeleteCharacter)
 		characters.PUT("/:id", handlers.UpdateCharacter)
