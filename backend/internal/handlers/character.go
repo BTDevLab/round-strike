@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"net/http"
@@ -14,7 +14,8 @@ func GetCharacters(c *gin.Context) {
 
 	if err := db.DB.Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to fetch characters"})
+			"error": "failed to fetch characters",
+		})
 		return
 	}
 
@@ -26,13 +27,15 @@ func CreateCharacter(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&character); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error creating character"})
+			"error": "error creating character",
+		})
 		return
 	}
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to create character"})
+			"error": "failed to create character",
+		})
 		return
 	}
 
@@ -45,18 +48,21 @@ func DeleteCharacter(c *gin.Context) {
 
 	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found"})
+			"error": "character not found",
+		})
 		return
 	}
 
 	if err := db.DB.Delete(&character).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete character"})
+			"error": "failed to delete character",
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": "character deleted!"})
+		"success": "character deleted!",
+	})
 }
 
 func GetCharacterByID(c *gin.Context) {
@@ -65,7 +71,8 @@ func GetCharacterByID(c *gin.Context) {
 
 	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found"})
+			"error": "character not found",
+		})
 		return
 	}
 
@@ -78,7 +85,8 @@ func UpdateCharacter(c *gin.Context) {
 
 	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found"})
+			"error": "character not found",
+		})
 		return
 	}
 	// GPT said its better to use Save instead of Update in this case, so it updates all the fields of the structure
@@ -86,7 +94,8 @@ func UpdateCharacter(c *gin.Context) {
 	var input models.Character
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid input"})
+			"error": "invalid input",
+		})
 		return
 	}
 
@@ -96,7 +105,8 @@ func UpdateCharacter(c *gin.Context) {
 
 	if err := db.DB.Save(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error updating character"})
+			"error": "error updating character",
+		})
 		return
 	}
 
