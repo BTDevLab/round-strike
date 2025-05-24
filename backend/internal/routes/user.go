@@ -9,6 +9,7 @@ import (
 
 func UserRoutes(route *gin.Engine) {
 	users := route.Group("/users")
+
 	// Public routes
 	users.POST("/users", handler.CreateUser)
 	users.POST("/login", handler.LoginUser)
