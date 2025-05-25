@@ -2,14 +2,23 @@ package routes
 
 import (
 	"github.com/tarikcarvalho08/round-strike/backend/internal/handlers"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CharacterRoutes(r *gin.Engine) {
-	r.GET("/character", handlers.GetCharacters)
-	r.POST("/character", handlers.CreateCharacter)
-	r.GET("/character/:id", handlers.GetCharacterByID)
-	r.DELETE("/character/:id", handlers.DeleteCharacter)
-	r.PUT("/character/:id", handlers.UpdateCharacter)
+func CharacterRoutes(route *gin.Engine) {
+	characters := route.Group("/characters")
+
+	// Public character routes
+	characters.GET("", handlers.GetCharacters)
+
+	// Protected character routes
+	characters.Use(middlewares.AuthMiddleware())
+	{
+		characters.POST("", handlers.CreateCharacter)
+		characters.GET("/:id", handlers.GetCharacterByID)
+		characters.DELETE("/:id", handlers.DeleteCharacter)
+		characters.PUT("/:id", handlers.UpdateCharacter)
+	}
 }

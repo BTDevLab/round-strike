@@ -12,7 +12,7 @@ func UserRoutes(route *gin.Engine) {
 
 	// Public user routes
 	users.POST("/login", handlers.LoginUser)
-	users.POST("/", handlers.CreateUser)
+	users.POST("", handlers.CreateUser)
 
 	// Protected user routes
 	users.Use(middlewares.AuthMiddleware())
