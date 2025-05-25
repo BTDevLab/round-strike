@@ -5,6 +5,7 @@ import (
 
 	"github.com/tarikcarvalho08/round-strike/backend/db"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,14 +24,15 @@ func GetCharacters(c *gin.Context) {
 }
 
 func CreateCharacter(c *gin.Context) {
-	var character models.Character
+	var inputCharacter models.Character
 
-	if err := c.ShouldBindJSON(&character); err != nil {
+	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "error creating character",
 		})
 		return
 	}
+	character := services.GenerateCharacterDefaultStats(inputCharacter)
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
