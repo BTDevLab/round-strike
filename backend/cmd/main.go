@@ -17,7 +17,8 @@ func main() {
 
 	// Setup router
 	router := gin.Default()
-	routes.RegisterRoutes(router)
+	routes.CharacterRoutes(router)
+	routes.UserRoutes(router)
 
 	// Start server
 	port := os.Getenv("PORT")
