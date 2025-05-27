@@ -24,6 +24,21 @@ func GetCharacters(c *gin.Context) {
 }
 
 func CreateCharacter(c *gin.Context) {
+
+	// c.Get returns a value and a boolean
+	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// The value returned by c.Get is an interface.
+	// We need to set the proper value of the response as our need. In this case, our userID is a string.
+	userID := userIDRaw.(string)
+
 	var inputCharacter models.Character
 
 	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
@@ -32,7 +47,9 @@ func CreateCharacter(c *gin.Context) {
 		})
 		return
 	}
+
 	character := services.GenerateCharacterDefaultStats(inputCharacter)
+	character.UserID = userID
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

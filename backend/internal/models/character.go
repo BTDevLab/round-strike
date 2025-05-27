@@ -7,5 +7,6 @@ type Character struct {
 	Experience int    `json:"experience" gorm:"type:int;not null"`
 	HP         int    `json:"hp" gorm:"type:int;not null"`
 	MP         int    `json:"mp" gorm:"type:int;not null"`
+	UserID     string `json:"user_id" gorm:"type:char(36);not null"`
 	CharacterStats
 }

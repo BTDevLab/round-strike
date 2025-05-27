@@ -22,6 +22,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		claims := &struct {
 			Username string `json:"username"`
+			UserID   string `json:"user_id"`
 			jwt.RegisteredClaims
 		}{}
 
@@ -35,6 +36,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("username", claims.Username)
+		c.Set("user_id", claims.UserID)
 		c.Next()
 	}
 }
