@@ -86,9 +86,17 @@ func DeleteCharacter(c *gin.Context) {
 
 func GetCharacterByID(c *gin.Context) {
 	id := c.Param("id")
+
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userID := userIDRaw.(string)
 	var character models.Character
 
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "character not found",
 		})
