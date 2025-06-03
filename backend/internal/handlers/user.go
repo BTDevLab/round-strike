@@ -30,7 +30,8 @@ func CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if ve, ok := err.(validator.ValidationErrors); ok {
-			c.JSON(http.StatusBadRequest, gin.H{"errors": utils.FormatCreateUserValidationErrors(ve)})
+			validationErrors := utils.FormatCreateUserValidationErrors(ve)
+			c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
