@@ -24,11 +24,15 @@ type Claims struct {
 
 func CreateUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username string `json:"username" binding:"required,min=3,max=16"`
+		Password string `json:"password" binding:"required,min=8,max=16"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if ve, ok := err.(validator.ValidationErrors); ok {
+			c.JSON(http.StatusBadRequest, gin.H{"errors": utils.FormatCreateUserValidationErrors(ve)})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
@@ -50,15 +54,11 @@ func CreateUser(c *gin.Context) {
 
 func LoginUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username" binding:"required,min=3,max=16"`
-		Password string `json:"password" binding:"required,min=8,max=16"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		if ve, ok := err.(validator.ValidationErrors); ok {
-			c.JSON(http.StatusBadRequest, gin.H{"errors": utils.FormatLoginValidationErrors(ve)})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}

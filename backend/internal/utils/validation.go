@@ -2,7 +2,7 @@ package utils
 
 import "github.com/go-playground/validator/v10"
 
-func FormatLoginValidationErrors(ve validator.ValidationErrors) map[string]string {
+func FormatCreateUserValidationErrors(ve validator.ValidationErrors) map[string]string {
 	errs := make(map[string]string)
 	for _, fe := range ve {
 		field := fe.Field()
