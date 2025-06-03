@@ -8,6 +8,7 @@ import (
 	"github.com/tarikcarvalho08/round-strike/backend/db"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/services"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
@@ -55,11 +56,7 @@ func LoginUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if ve, ok := err.(validator.ValidationErrors); ok {
-			errs := make(map[string]string)
-			for _, fe := range ve {
-				errs[fe.Field()] = fe.Error()
-			}
-			c.JSON(http.StatusBadRequest, gin.H{"errors": errs})
+			c.JSON(http.StatusBadRequest, gin.H{"errors": utils.FormatLoginValidationErrors(ve)})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
