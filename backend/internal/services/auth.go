@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -33,7 +34,12 @@ func AuthenticateUser(username, password string) (string, error) {
 		return "", ErrInvalidPassword
 	}
 
-	expiration := time.Now().Add(1 * time.Hour)
+	var expiration time.Time
+	if os.Getenv("GO_ENV") == "development" {
+		expiration = time.Now().Add(30 * 24 * time.Hour)
+	} else {
+		expiration = time.Now().Add(1 * time.Hour)
+	}
 	claims := &Claims{
 		Username: user.Username,
 		UserID:   user.ID,
