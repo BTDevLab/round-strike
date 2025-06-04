@@ -4,7 +4,7 @@ import "github.com/tarikcarvalho08/round-strike/backend/internal/models"
 
 // At the moment no need to handle errors.
 // In future if add name validation, etc, will need to implement those in here and in the handler
-func GenerateCharacterDefaultStats(character models.Character, userID string) models.Character {
+func BuildCharacter(character models.Character, userID string) models.Character {
 	return models.Character{
 		Name:       character.Name,
 		UserID:     userID,
