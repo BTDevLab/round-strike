@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tarikcarvalho08/round-strike/backend/db"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/services"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
@@ -22,11 +24,16 @@ type Claims struct {
 
 func CreateUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username string `json:"username" binding:"required,min=3,max=16"`
+		Password string `json:"password" binding:"required,min=8,max=16"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
+		if ve, ok := err.(validator.ValidationErrors); ok {
+			validationErrors := utils.FormatCreateUserValidationErrors(ve)
+			c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
@@ -57,30 +64,20 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-	if err := db.DB.Where("username = ?", input.Username).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	token, err := services.AuthenticateUser(input.Username, input.Password)
+	if err != nil {
+		switch err {
+		case services.ErrUserNotFound:
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		case services.ErrInvalidPassword:
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "authentication failed"})
+		}
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password"})
-		return
-	}
-
-	expirationTime := time.Now().Add(1 * time.Hour)
-	claims := &Claims{
-		Username: user.Username,
-		UserID:   user.ID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, _ := token.SignedString(jwtKey)
-
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func GetUsers(c *gin.Context) {
