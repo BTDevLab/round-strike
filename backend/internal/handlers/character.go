@@ -48,8 +48,7 @@ func CreateCharacter(c *gin.Context) {
 		return
 	}
 
-	character := services.GenerateCharacterDefaultStats(inputCharacter)
-	character.UserID = userID
+	character := services.GenerateCharacterDefaultStats(inputCharacter, userID)
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
