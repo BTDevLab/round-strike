@@ -29,8 +29,8 @@ func Connect() {
 	}
 
 	err = DB.AutoMigrate(
-		&models.Character{},
 		&models.User{},
+		&models.Character{},
 	)
 	if err != nil {
 		log.Fatalf("AutoMigrate failed: %v", err)

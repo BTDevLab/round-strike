@@ -5,6 +5,7 @@ import (
 
 	"github.com/tarikcarvalho08/round-strike/backend/db"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,14 +24,31 @@ func GetCharacters(c *gin.Context) {
 }
 
 func CreateCharacter(c *gin.Context) {
-	var character models.Character
 
-	if err := c.ShouldBindJSON(&character); err != nil {
+	// c.Get returns a value and a boolean
+	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// The value returned by c.Get is an interface.
+	// We need to set the proper value of the response as our need. In this case, our userID is a string.
+	userID := userIDRaw.(string)
+
+	var inputCharacter models.Character
+
+	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "error creating character",
 		})
 		return
 	}
+
+	character := services.BuildCharacter(inputCharacter, userID)
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -44,9 +62,17 @@ func CreateCharacter(c *gin.Context) {
 
 func DeleteCharacter(c *gin.Context) {
 	id := c.Param("id")
+
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userID := userIDRaw.(string)
 	var character models.Character
 
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "character not found",
 		})
@@ -67,9 +93,17 @@ func DeleteCharacter(c *gin.Context) {
 
 func GetCharacterByID(c *gin.Context) {
 	id := c.Param("id")
+
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userID := userIDRaw.(string)
 	var character models.Character
 
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "character not found",
 		})
@@ -81,14 +115,24 @@ func GetCharacterByID(c *gin.Context) {
 
 func UpdateCharacter(c *gin.Context) {
 	id := c.Param("id")
+
+	userIDRaw, exists := c.Get("userID")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userID := userIDRaw.(string)
 	var character models.Character
 
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "character not found",
 		})
 		return
 	}
+
 	// GPT said its better to use Save instead of Update in this case, so it updates all the fields of the structure
 	// Also, it is updating each field from the request, to the user, and then saving this user back into the DB (not sure if that's the ideal)
 	var input models.Character
