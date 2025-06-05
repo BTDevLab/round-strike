@@ -1,7 +1,9 @@
 # .air.toml
 
-# app root path
+# Root path of the application
 root = "."
+
+# Temporary directory for the compiled binaries
 tmp_dir = "tmp"
 
 [build]
@@ -10,6 +12,7 @@ tmp_dir = "tmp"
   full_bin = "tmp/main"
   include_ext = ["go", "tpl", "tmpl", "html"]
   exclude_dir = ["assets", "tmp", "vendor"]
+  poll = true
 
 [log]
-  level = "debug"
+  level = "debug"         # Log level set to debug for detailed logging
