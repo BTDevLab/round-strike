@@ -24,7 +24,6 @@ func GetCharacters(c *gin.Context) {
 }
 
 func CreateCharacter(c *gin.Context) {
-
 	// c.Get returns a value and a boolean
 	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
 	userIDRaw, exists := c.Get("userID")
@@ -144,8 +143,6 @@ func UpdateCharacter(c *gin.Context) {
 	}
 
 	character.Name = input.Name
-	character.HP = input.HP
-	character.MP = input.MP
 
 	if err := db.DB.Save(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
