@@ -37,21 +37,23 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
-  frontend:
-    build:
-      context: ./frontend
-    container_name: round-strike-frontend
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    command: npm run dev
-    depends_on:
-      - backend
+  # Uncomment the following section to enable the frontend service
+  # Note: Need to solve hot reload issue before enabling frontend with Docker.
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: round-strike-frontend
+  #   working_dir: /app
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #   command: npm run dev
+  #   depends_on:
+  #     - backend
 
 volumes:
   mysql-data:
