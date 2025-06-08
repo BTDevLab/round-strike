@@ -46,7 +46,7 @@ export default function RootLayout({
             </Link>
             <nav className="ml-auto flex gap-4 sm:gap-6">
               <Link
-                href="#register"
+                href="/register"
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
               >
                 Create account

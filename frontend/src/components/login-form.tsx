@@ -49,7 +49,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   </Label>
                   <a
                     href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline text-white"
+                    // className="ml-auto text-sm underline-offset-2 hover:underline text-white"
+                    className="ml-auto text-sm text-purple-400 hover:text-purple-300 italic font-medium"
                   >
                     Forgot your password?
                   </a>
@@ -64,7 +65,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               </div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
               >
                 Login
               </Button>
@@ -127,7 +128,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 Don&apos;t have an account?{' '}
                 <a
                   href="#"
-                  className="underline underline-offset-4 text-white hover:text-primary transition-colors font-bold"
+                  className="text-purple-400 hover:text-purple-300 underline font-medium"
                 >
                   Sign up
                 </a>
