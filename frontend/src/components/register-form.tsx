@@ -17,7 +17,7 @@ import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export default function RegisterPage() {
+export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
