@@ -1,44 +1,10 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LogIn, Pencil, Star, Users } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import MainLogo from '../../public/main-logo.png';
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
-      <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-sm bg-black/20 border-b border-purple-500/20">
-        <Link
-          href="/"
-          className="flex items-center justify-center"
-        >
-          <div className="flex items-center space-x-2">
-            <Image
-              src={MainLogo}
-              alt="Round Strike Logo"
-              className="w-12 h-12 rounded-full"
-            />
-            <span className="text-2xl font-bold text-white">Round Strike</span>
-          </div>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#register"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-          >
-            Create account
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-          >
-            Login
-          </Link>
-        </nav>
-      </header>
-
+    <div className="flex flex-col w-full bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20" />
@@ -90,39 +56,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-purple-500/30 bg-black/40">
-        <p className="text-xs text-gray-400">
-          © {new Date().getFullYear()} Round Strike. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4 text-gray-400 hover:text-white"
-          >
-            Terms of Service
-          </Link>
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4 text-gray-400 hover:text-white"
-          >
-            Privacy Policy
-          </Link>
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4 text-gray-400 hover:text-white"
-          >
-            Support
-          </Link>
-          <Link
-            href="#"
-            className="text-xs hover:underline underline-offset-4 text-gray-400 hover:text-white"
-          >
-            Discord
-          </Link>
-        </nav>
-      </footer>
     </div>
   );
 }
