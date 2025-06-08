@@ -13,7 +13,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Eye, EyeOff, Shield, Star, Sword, Users } from 'lucide-react';
+import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -40,31 +40,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 flex flex-col">
-      {/* Header */}
-      <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-sm bg-black/20 border-b border-purple-500/20">
-        <Link
-          href="/"
-          className="flex items-center justify-center"
-        >
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-              <Sword className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white">Round Strike</span>
-          </div>
-        </Link>
-        <nav className="ml-auto">
-          <Link
-            href="/"
-            className="flex items-center text-sm font-medium text-gray-300 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
-        </nav>
-      </header>
-
+    <div className="w-full bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 flex flex-col">
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {/* Registration Card */}
@@ -270,39 +246,8 @@ export default function RegisterPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Benefits Section */}
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <div className="text-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Users className="h-5 w-5 text-white" />
-              </div>
-              <p className="text-sm text-gray-300">Join 50K+ Players</p>
-            </div>
-            <div className="text-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Star className="h-5 w-5 text-white" />
-              </div>
-              <p className="text-sm text-gray-300">Free to Play</p>
-            </div>
-            <div className="text-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Shield className="h-5 w-5 text-white" />
-              </div>
-              <p className="text-sm text-gray-300">Secure & Safe</p>
-            </div>
-          </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="py-6 px-4 border-t border-purple-500/30 bg-black/40">
-        <div className="text-center">
-          <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} Round Strike. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

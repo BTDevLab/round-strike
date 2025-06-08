@@ -10,7 +10,7 @@ import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
-      className={cn('flex flex-col gap-6 w-full', className)}
+      className={cn('flex flex-col gap-6', className)}
       {...props}
     >
       <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
@@ -31,7 +31,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   Email
                 </Label>
                 <Input
-                  className="text-white placeholder:text-white-foreground"
+                  // className="text-white placeholder:text-white-foreground"
+                  className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -54,7 +55,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   </a>
                 </div>
                 <Input
-                  className="text-white placeholder:text-white-foreground"
+                  className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                   placeholder="Enter your password"
                   id="password"
                   type="password"
