@@ -70,7 +70,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 Login
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
+                <span className="bg-purple-400 text-white relative z-10 px-2">
                   Or continue with
                 </span>
               </div>
@@ -78,7 +78,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +110,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
