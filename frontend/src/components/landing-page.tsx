@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LogIn, Pencil, Star, Users } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LandingPage() {
   return (
@@ -31,7 +32,7 @@ export default function LandingPage() {
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 cursor-pointer"
                 >
                   <LogIn className="h-5 w-5" />
-                  Login
+                  <Link href="/login">Login</Link>
                 </Button>
                 <Button
                   size="lg"
@@ -39,7 +40,7 @@ export default function LandingPage() {
                   className="border-purple-400 text-purple-600 hover:bg-purple-200 hover:text-purple-800 px-8 py-3 cursor-pointer"
                 >
                   <Pencil className="h-5 w-5" />
-                  Create your account
+                  <Link href="/register">Create your account</Link>
                 </Button>
               </div>
               <div className="flex items-center gap-4 mt-6 text-sm text-gray-400">
