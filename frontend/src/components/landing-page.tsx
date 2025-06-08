@@ -82,10 +82,10 @@ export default function LandingPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-purple-400 text-purple-200 hover:bg-purple-600/20 px-8 py-3"
+                  className="border-purple-400 text-purple-600 hover:bg-purple-200 hover:text-purple-800 px-8 py-3"
                 >
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Free
+                  {/* <Download className="mr-2 h-5 w-5" /> */}
+                  Register your account
                 </Button>
               </div>
               <div className="flex items-center gap-4 mt-6 text-sm text-gray-400">
