@@ -31,7 +31,7 @@ export default function LandingPage() {
             Create account
           </Link>
           <Link
-            href="#login"
+            href="/login"
             className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
           >
             Login
