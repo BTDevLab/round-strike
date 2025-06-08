@@ -18,14 +18,20 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           <form className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">
-                  Login to your Acme Inc account
+                <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+                <p className="text-balance text-purple-300">
+                  Login to your Round Strike account
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label
+                  htmlFor="email"
+                  className="text-white"
+                >
+                  Email
+                </Label>
                 <Input
+                  className="text-white placeholder:text-white-foreground"
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -34,15 +40,22 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label
+                    htmlFor="password"
+                    className="text-white"
+                  >
+                    Password
+                  </Label>
                   <a
                     href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
+                    className="ml-auto text-sm underline-offset-2 hover:underline text-white"
                   >
                     Forgot your password?
                   </a>
                 </div>
                 <Input
+                  className="text-white placeholder:text-white-foreground"
+                  placeholder="Enter your password"
                   id="password"
                   type="password"
                   required
@@ -109,11 +122,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   <span className="sr-only">Login with Meta</span>
                 </Button>
               </div>
-              <div className="text-center text-sm">
+              <div className="text-center text-sm text-white">
                 Don&apos;t have an account?{' '}
                 <a
                   href="#"
-                  className="underline underline-offset-4"
+                  className="underline underline-offset-4 text-white hover:text-primary transition-colors font-bold"
                 >
                   Sign up
                 </a>
