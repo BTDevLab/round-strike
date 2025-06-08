@@ -1,7 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { LogIn, Pencil, Star, Sword, Users } from 'lucide-react';
+import { LogIn, Pencil, Star, Users } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+import MainLogo from '../../public/main-logo.png';
 
 export default function LandingPage() {
   return (
@@ -13,10 +15,12 @@ export default function LandingPage() {
           className="flex items-center justify-center"
         >
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-600 rounded-full flex items-center justify-center">
-              <Sword className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white">Round Strike</span>
+            <Image
+              src={MainLogo}
+              alt="Round Strike Logo"
+              className="w-12 h-12 rounded-full"
+            />
+            <span className="text-2xl font-bold text-white">Round Strike</span>
           </div>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
