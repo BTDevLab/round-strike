@@ -17,7 +17,12 @@ import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+
 export default function RegisterForm() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -33,9 +38,64 @@ export default function RegisterForm() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const registerUser = async ({
+    username,
+    // email,
+    password,
+  }: {
+    username: string;
+    // email: string;
+    password: string;
+  }) => {
+    const res = await fetch(`${API_URL}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        // email,
+        password,
+      }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Registration failed');
+    }
+
+    return await res.json();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic here
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const teste = await registerUser({
+        username: formData.username,
+        // email: formData.email,
+        password: formData.password,
+      });
+      console.log(teste);
+      setSuccess(true);
+      // Opcional: limpar formulário ou redirecionar
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Registration failed');
+      } else {
+        setError('Registration failed');
+      }
+    } finally {
+      setLoading(false);
+    }
+
     console.log('Registration data:', formData);
   };
 
@@ -60,6 +120,22 @@ export default function RegisterForm() {
             </CardHeader>
 
             <CardContent className="space-y-6">
+              {/* Feedback messages */}
+              {error && (
+                <div className="w-full text-center text-sm text-red-400 bg-red-900/30 rounded px-3 py-2">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="w-full text-center text-sm text-green-400 bg-green-900/30 rounded px-3 py-2">
+                  Registration successful! You can now log in.
+                </div>
+              )}
+              {loading && (
+                <div className="w-full text-center text-sm text-purple-300">
+                  Creating your account...
+                </div>
+              )}
               <form
                 onSubmit={handleSubmit}
                 className="space-y-4"
