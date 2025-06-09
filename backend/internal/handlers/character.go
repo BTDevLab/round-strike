@@ -15,12 +15,16 @@ func GetCharacters(c *gin.Context) {
 
 	if err := db.DB.Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to fetch characters",
+			"ok":    false,
+			"error": "Failed to fetch characters",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, characters)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": characters,
+	})
 }
 
 func CreateCharacter(c *gin.Context) {
@@ -29,6 +33,7 @@ func CreateCharacter(c *gin.Context) {
 	userIDRaw, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
 			"error": "Unauthorized",
 		})
 		return
@@ -42,7 +47,8 @@ func CreateCharacter(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error creating character",
+			"ok":    false,
+			"error": "Error creating character",
 		})
 		return
 	}
@@ -51,12 +57,16 @@ func CreateCharacter(c *gin.Context) {
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to create character",
+			"ok":    false,
+			"error": "Failed to create character",
 		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, character)
+	c.JSON(http.StatusCreated, gin.H{
+		"ok":      true,
+		"message": "Character created successfully!",
+	})
 }
 
 func DeleteCharacter(c *gin.Context) {
@@ -64,7 +74,10 @@ func DeleteCharacter(c *gin.Context) {
 
 	userIDRaw, exists := c.Get("userID")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
 		return
 	}
 
@@ -73,21 +86,21 @@ func DeleteCharacter(c *gin.Context) {
 
 	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
+			"ok":    false,
+			"error": "Character not found",
 		})
 		return
 	}
 
 	if err := db.DB.Delete(&character).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete character",
+			"ok":    false,
+			"error": "Failed to delete character",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"success": "character deleted!",
-	})
+	c.JSON(http.StatusNoContent, "")
 }
 
 func GetCharacterByID(c *gin.Context) {
@@ -95,7 +108,10 @@ func GetCharacterByID(c *gin.Context) {
 
 	userIDRaw, exists := c.Get("userID")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
 		return
 	}
 
@@ -104,12 +120,16 @@ func GetCharacterByID(c *gin.Context) {
 
 	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
+			"ok":    false,
+			"error": "Character not found",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": character,
+	})
 }
 
 func UpdateCharacter(c *gin.Context) {
@@ -118,7 +138,10 @@ func UpdateCharacter(c *gin.Context) {
 	userIDRaw, exists := c.Get("userID")
 
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
 		return
 	}
 
@@ -127,7 +150,8 @@ func UpdateCharacter(c *gin.Context) {
 
 	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
+			"ok":    false,
+			"error": "Character not found",
 		})
 		return
 	}
@@ -137,7 +161,8 @@ func UpdateCharacter(c *gin.Context) {
 	var input models.Character
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid input",
+			"ok":    false,
+			"error": "Invalid input",
 		})
 		return
 	}
@@ -146,10 +171,14 @@ func UpdateCharacter(c *gin.Context) {
 
 	if err := db.DB.Save(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error updating character",
+			"ok":    false,
+			"error": "Error updating character!",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": "Character updated successfully!",
+	})
 }
