@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -95,6 +95,10 @@ export default function RegisterForm() {
 
     console.log('Registration data:', formData);
   };
+
+  const isFormValid = useMemo(() => {
+    return formData.password === formData.confirmPassword && formData.agreeToTerms;
+  }, [formData]);
 
   return (
     <div className="w-full bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 flex flex-col">
@@ -263,7 +267,7 @@ export default function RegisterForm() {
                 <Button
                   type="submit"
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
-                  disabled={!formData.agreeToTerms}
+                  disabled={!isFormValid}
                 >
                   Create Account
                 </Button>
