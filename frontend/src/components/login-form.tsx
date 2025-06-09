@@ -13,19 +13,26 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       className={cn('flex flex-col gap-6', className)}
       {...props}
     >
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">
-                  Login to your Acme Inc account
+                <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+                <p className="text-balance text-purple-300">
+                  Login to your Round Strike account
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label
+                  htmlFor="email"
+                  className="text-white"
+                >
+                  Email
+                </Label>
                 <Input
+                  // className="text-white placeholder:text-white-foreground"
+                  className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -34,15 +41,23 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label
+                    htmlFor="password"
+                    className="text-white"
+                  >
+                    Password
+                  </Label>
                   <a
                     href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
+                    // className="ml-auto text-sm underline-offset-2 hover:underline text-white"
+                    className="ml-auto text-sm text-purple-400 hover:text-purple-300 italic font-medium"
                   >
                     Forgot your password?
                   </a>
                 </div>
                 <Input
+                  className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
+                  placeholder="Enter your password"
                   id="password"
                   type="password"
                   required
@@ -50,12 +65,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               </div>
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
               >
                 Login
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
+                <span className="bg-purple-400 text-white relative z-10 px-2">
                   Or continue with
                 </span>
               </div>
@@ -63,7 +78,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +94,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +110,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <Button
                   variant="outline"
                   type="button"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -109,11 +124,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   <span className="sr-only">Login with Meta</span>
                 </Button>
               </div>
-              <div className="text-center text-sm">
+              <div className="text-center text-sm text-white">
                 Don&apos;t have an account?{' '}
                 <a
                   href="#"
-                  className="underline underline-offset-4"
+                  className="text-purple-400 hover:text-purple-300 underline font-medium"
                 >
                   Sign up
                 </a>
