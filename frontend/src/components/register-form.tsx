@@ -27,11 +27,9 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
     password: '',
     confirmPassword: '',
     agreeToTerms: false,
-    subscribeNewsletter: true,
   });
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -40,21 +38,15 @@ export default function RegisterForm() {
 
   const registerUser = async ({
     username,
-    // email,
     password,
   }: {
     username: string;
-    // email: string;
     password: string;
   }) => {
     const res = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username,
-        // email,
-        password,
-      }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (!res.ok) {
@@ -80,12 +72,17 @@ export default function RegisterForm() {
     try {
       const teste = await registerUser({
         username: formData.username,
-        // email: formData.email,
         password: formData.password,
       });
       console.log(teste);
       setSuccess(true);
       // Opcional: limpar formulário ou redirecionar
+      setFormData({
+        username: '',
+        password: '',
+        confirmPassword: '',
+        agreeToTerms: false,
+      });
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || 'Registration failed');
@@ -154,25 +151,6 @@ export default function RegisterForm() {
                     placeholder="Choose your hero name"
                     value={formData.username}
                     onChange={(e) => handleInputChange('username', e.target.value)}
-                    className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400"
-                    required
-                  />
-                </div>
-
-                {/* Email Field */}
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-white"
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
                     className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400"
                     required
                   />
