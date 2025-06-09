@@ -76,7 +76,6 @@ export default function RegisterForm() {
       });
       console.log(teste);
       setSuccess(true);
-      // Opcional: limpar formulário ou redirecionar
       setFormData({
         username: '',
         password: '',
@@ -230,7 +229,7 @@ export default function RegisterForm() {
                   </div>
                 </div>
 
-                {/* Terms and Newsletter Checkboxes */}
+                {/* Terms Checkbox */}
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <Checkbox
