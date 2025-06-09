@@ -32,10 +32,12 @@ export default function RegisterForm() {
     agreeToTerms: false,
   });
 
+  // This function updates the form data state based on user input
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // This function handles user registration by sending a POST request to the API
   const registerUser = async ({
     username,
     password,
@@ -57,25 +59,40 @@ export default function RegisterForm() {
     return await res.json();
   };
 
+  // This function handles the form submission, validates input, and calls the registerUser function
   const handleSubmit = async (e: React.FormEvent) => {
+    // Prevent default form submission behavior
     e.preventDefault();
     setLoading(true);
     setError(null);
     setSuccess(false);
 
+    // Basic password validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
       setLoading(false);
       return;
     }
 
+    if (!formData.agreeToTerms) {
+      setError('You must agree to the terms and conditions.');
+      setLoading(false);
+      return;
+    }
+    if (formData.username.trim() === '' || formData.password.trim() === '') {
+      setError('Username and password cannot be empty.');
+      setLoading(false);
+      return;
+    }
+
+    // Attempt to register the user
     try {
-      const teste = await registerUser({
+      await registerUser({
         username: formData.username,
         password: formData.password,
       });
-      console.log(teste);
       setSuccess(true);
+      // Reset form data after successful registration
       setFormData({
         username: '',
         password: '',
@@ -83,6 +100,7 @@ export default function RegisterForm() {
         agreeToTerms: false,
       });
     } catch (err: unknown) {
+      // Handle errors from the registration API
       if (err instanceof Error) {
         setError(err.message || 'Registration failed');
       } else {
@@ -95,6 +113,7 @@ export default function RegisterForm() {
     console.log('Registration data:', formData);
   };
 
+  // This memoized value checks if the form is valid for submission
   const isFormValid = useMemo(() => {
     return formData.password === formData.confirmPassword && formData.agreeToTerms;
   }, [formData]);
