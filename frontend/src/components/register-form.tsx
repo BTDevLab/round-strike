@@ -203,23 +203,6 @@ export default function RegisterForm() {
                       </Link>
                     </Label>
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="newsletter"
-                      checked={formData.subscribeNewsletter}
-                      onCheckedChange={(checked: boolean) =>
-                        handleInputChange('subscribeNewsletter', checked as boolean)
-                      }
-                      className="border-purple-400/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
-                    />
-                    <Label
-                      htmlFor="newsletter"
-                      className="text-sm text-gray-300 leading-none"
-                    >
-                      Subscribe to newsletter for game updates and exclusive content
-                    </Label>
-                  </div>
                 </div>
 
                 {/* Submit Button */}
