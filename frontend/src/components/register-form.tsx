@@ -13,6 +13,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { validateRegisterAccountFields } from '@/lib/utils';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -31,6 +32,16 @@ export default function RegisterForm() {
     confirmPassword: '',
     agreeToTerms: false,
   });
+
+  // State to track which fields have been touched for validation
+  // This helps provide immediate feedback to the user
+  const [touched, setTouched] = useState({
+    username: false,
+    password: false,
+    confirmPassword: false,
+  });
+
+  const errors = useMemo(() => validateRegisterAccountFields(formData), [formData]);
 
   // This function updates the form data state based on user input
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -67,24 +78,6 @@ export default function RegisterForm() {
     setError(null);
     setSuccess(false);
 
-    // Basic password validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.agreeToTerms) {
-      setError('You must agree to the terms and conditions.');
-      setLoading(false);
-      return;
-    }
-    if (formData.username.trim() === '' || formData.password.trim() === '') {
-      setError('Username and password cannot be empty.');
-      setLoading(false);
-      return;
-    }
-
     // Attempt to register the user
     try {
       await registerUser({
@@ -115,8 +108,11 @@ export default function RegisterForm() {
 
   // This memoized value checks if the form is valid for submission
   const isFormValid = useMemo(() => {
-    return formData.password === formData.confirmPassword && formData.agreeToTerms;
-  }, [formData]);
+    const noErrors = Object.values(errors).every((err) => !err);
+    return (
+      noErrors && formData.password === formData.confirmPassword && formData.agreeToTerms
+    );
+  }, [errors, formData.password, formData.confirmPassword, formData.agreeToTerms]);
 
   return (
     <div className="w-full bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 flex flex-col">
@@ -173,9 +169,13 @@ export default function RegisterForm() {
                     placeholder="Choose your hero name"
                     value={formData.username}
                     onChange={(e) => handleInputChange('username', e.target.value)}
+                    onBlur={() => setTouched((prev) => ({ ...prev, username: true }))}
                     className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400"
                     required
                   />
+                  {touched.username && errors.username && (
+                    <span className="text-xs text-red-400">{errors.username}</span>
+                  )}
                 </div>
 
                 {/* Password Field */}
@@ -193,6 +193,7 @@ export default function RegisterForm() {
                       placeholder="Create a strong password"
                       value={formData.password}
                       onChange={(e) => handleInputChange('password', e.target.value)}
+                      onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
                       className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                       required
                     />
@@ -210,6 +211,9 @@ export default function RegisterForm() {
                       )}
                     </Button>
                   </div>
+                  {touched.password && errors.password && (
+                    <span className="text-xs text-red-400">{errors.password}</span>
+                  )}
                 </div>
 
                 {/* Confirm Password Field */}
@@ -229,6 +233,9 @@ export default function RegisterForm() {
                       onChange={(e) =>
                         handleInputChange('confirmPassword', e.target.value)
                       }
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, confirmPassword: true }))
+                      }
                       className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                       required
                     />
@@ -246,6 +253,9 @@ export default function RegisterForm() {
                       )}
                     </Button>
                   </div>
+                  {touched.confirmPassword && errors.confirmPassword && (
+                    <span className="text-xs text-red-400">{errors.confirmPassword}</span>
+                  )}
                 </div>
 
                 {/* Terms Checkbox */}
