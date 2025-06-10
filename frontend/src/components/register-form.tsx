@@ -149,7 +149,13 @@ export default function RegisterForm() {
               )}
               {success && (
                 <div className="w-full text-center text-sm text-green-400 bg-green-900/30 rounded px-3 py-2">
-                  Registration successful! You can now log in.
+                  Registration successful! You can now{' '}
+                  <Link
+                    href="/login"
+                    className="text-purple-400 hover:text-purple-300 underline font-medium"
+                  >
+                    log in
+                  </Link>
                 </div>
               )}
               {loading && (
