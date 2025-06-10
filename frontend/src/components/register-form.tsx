@@ -17,6 +17,7 @@ import { validateRegisterAccountFields } from '@/lib/utils';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import LoadingButton from './ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -91,6 +92,11 @@ export default function RegisterForm() {
         password: '',
         confirmPassword: '',
         agreeToTerms: false,
+      });
+      setTouched({
+        username: false,
+        password: false,
+        confirmPassword: false,
       });
     } catch (err: unknown) {
       // Handle errors from the registration API
@@ -297,7 +303,7 @@ export default function RegisterForm() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                   disabled={!isFormValid}
                 >
-                  Create Account
+                  {loading ? <LoadingButton /> : 'Create Account'}
                 </Button>
               </form>
 
