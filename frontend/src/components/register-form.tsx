@@ -273,7 +273,7 @@ export default function RegisterForm() {
                       onCheckedChange={(checked: boolean) =>
                         handleInputChange('agreeToTerms', checked as boolean)
                       }
-                      className="border-purple-400/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                      className="border-purple-400/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600 cursor-pointer"
                     />
                     <Label
                       htmlFor="terms"
