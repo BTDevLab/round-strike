@@ -31,10 +31,17 @@ func CreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		if ve, ok := err.(validator.ValidationErrors); ok {
 			validationErrors := utils.FormatCreateUserValidationErrors(ve)
-			c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+			c.JSON(http.StatusBadRequest, gin.H{
+				"ok":      false,
+				"message": "Validation error",
+				"errors":  validationErrors,
+			})
 			return
 		}
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Invalid input data",
+		})
 		return
 	}
 
@@ -46,11 +53,17 @@ func CreateUser(c *gin.Context) {
 	}
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create user"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Failed to create user",
+		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully!"})
+	c.JSON(http.StatusCreated, gin.H{
+		"ok":      true,
+		"message": "User created successfully!",
+	})
 }
 
 func LoginUser(c *gin.Context) {
@@ -60,7 +73,10 @@ func LoginUser(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Invalid input data",
+		})
 		return
 	}
 
@@ -68,26 +84,44 @@ func LoginUser(c *gin.Context) {
 	if err != nil {
 		switch err {
 		case services.ErrUserNotFound:
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			c.JSON(http.StatusNotFound, gin.H{
+				"ok":      false,
+				"message": err.Error(),
+			})
 		case services.ErrInvalidPassword:
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"ok":      false,
+				"message": err.Error(),
+			})
 		default:
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "authentication failed"})
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"ok":      false,
+				"message": "Authentication failed",
+			})
 		}
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": token,
+	})
 }
 
 func GetUsers(c *gin.Context) {
 	var users []models.User
 	if err := db.DB.Find(&users).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":      false,
+			"message": "Failed to fetch users",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": users,
+	})
 }
 
 func GetUserByID(c *gin.Context) {
@@ -95,9 +129,15 @@ func GetUserByID(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := db.DB.First(&user, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		c.JSON(http.StatusNotFound, gin.H{
+			"ok":      false,
+			"message": "User not found",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": user,
+	})
 }
