@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
 import { useState } from 'react';
+import LoadingButton from './ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -144,9 +145,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
-                disabled={loading}              
               >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? <LoadingButton /> : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-purple-400 text-white relative z-10 px-2">
