@@ -21,7 +21,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
 		claims := &struct {
-			Username string `json:"username"`
+			Email string `json:"email"`
 			UserID   string `json:"user_id"`
 			jwt.RegisteredClaims
 		}{}
@@ -35,7 +35,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("username", claims.Username)
+		c.Set("email", claims.Email)
 		c.Set("userID", claims.UserID)
 		c.Next()
 	}
