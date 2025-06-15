@@ -108,8 +108,6 @@ export default function RegisterForm() {
     } finally {
       setLoading(false);
     }
-
-    console.log('Registration data:', formData);
   };
 
   // This memoized value checks if the form is valid for submission

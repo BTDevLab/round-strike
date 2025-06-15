@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
 import { useState } from 'react';
 import LoadingButton from './ui/LoadingButton';
+import  { useRouter } from 'next/navigation'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -20,6 +21,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     email: "",
     password:""
   });
+  const router = useRouter();
 
   const handleInputChange = (field: string, value: string) => {
     setLoginData((prev) => ({
@@ -61,7 +63,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
         password: ''
       })
 
-
+      // Redirects user to character page once login is successful
+      router.push("/character")
+    
     }catch(err: unknown){
       // Handle errors from the login API
       
@@ -206,7 +210,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               <div className="text-center text-sm text-white">
                 Don&apos;t have an account?{' '}
                 <a
-                  href="#"
+                  href="/register"
                   className="text-purple-400 hover:text-purple-300 underline font-medium"
                 >
                   Sign up

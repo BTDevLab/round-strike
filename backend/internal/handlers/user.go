@@ -82,22 +82,18 @@ func LoginUser(c *gin.Context) {
 
 	token, err := services.AuthenticateUser(input.Email, input.Password)
 	if err != nil {
-		switch err {
-		case services.ErrUserNotFound:
-			c.JSON(http.StatusNotFound, gin.H{
-				"ok":      false,
-				"message": err.Error(),
-			})
-		case services.ErrInvalidPassword:
+		if err == services.ErrUserNotFound || err == services.ErrInvalidPassword {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"ok":      false,
-				"message": err.Error(),
+				"message": "Incorrect email or password",
 			})
-		default:
+
+		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"ok":      false,
 				"message": "Authentication failed",
 			})
+
 		}
 		return
 	}
