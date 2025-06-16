@@ -11,6 +11,9 @@ import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
 import { useState } from 'react';
 import LoadingButton from './ui/LoadingButton';
 import  { useRouter } from 'next/navigation'
+import { jwtDecode } from "jwt-decode";
+import { useUserStore } from "@/stores/user";
+import type { User } from "@/types/user";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -21,7 +24,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     email: "",
     password:""
   });
+  // Creates the NextJs route to navigate between pages
   const router = useRouter();
+  // Sets the Zustand store
+  const { setUser } = useUserStore();
 
   const handleInputChange = (field: string, value: string) => {
     setLoginData((prev) => ({
@@ -55,7 +61,17 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
     try {
       // Attempt to login the user
-      await loginUser({email: loginData.email, password: loginData.password});
+      const response = await loginUser({email: loginData.email, password: loginData.password});
+      const token = response.message
+
+      console.log("my token", response)
+
+      // Decode token fetched from API call and store User in Zustand.
+      // Also store returned token in localstorage
+      const decodedUser = jwtDecode<User>(token)
+      setUser(decodedUser)
+      localStorage.setItem("token", token)
+
 
       // Reset form data after successful login
       setLoginData({
