@@ -7,16 +7,14 @@ func FormatCreateUserValidationErrors(ve validator.ValidationErrors) map[string]
 	for _, fe := range ve {
 		field := fe.Field()
 		switch field {
-		case "Username":
+		case "Email":
 			switch fe.Tag() {
 			case "required":
-				errs["username"] = "Username is required."
-			case "min":
-				errs["username"] = "Username must be at least 3 characters."
-			case "max":
-				errs["username"] = "Username must be at most 16 characters."
+				errs["email"] = "Email is required."
+			case "email":
+				errs["email"] = "Email must be a valid email address."
 			default:
-				errs["username"] = "Invalid username."
+				errs["email"] = "Invalid email."
 			}
 		case "Password":
 			switch fe.Tag() {

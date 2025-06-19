@@ -19,14 +19,14 @@ var (
 )
 
 type Claims struct {
-	Username string `json:"username"`
-	UserID   string `json:"user_id"`
+	Email  string `json:"email"`
+	UserID string `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
-func AuthenticateUser(username, password string) (string, error) {
+func AuthenticateUser(email, password string) (string, error) {
 	var user models.User
-	if err := db.DB.Where("username = ?", username).First(&user).Error; err != nil {
+	if err := db.DB.Where("email = ?", email).First(&user).Error; err != nil {
 		return "", ErrUserNotFound
 	}
 
@@ -41,8 +41,8 @@ func AuthenticateUser(username, password string) (string, error) {
 		expiration = time.Now().Add(1 * time.Hour)
 	}
 	claims := &Claims{
-		Username: user.Username,
-		UserID:   user.ID,
+		Email:  user.Email,
+		UserID: user.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiration),
 		},

@@ -28,7 +28,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
     confirmPassword: '',
     agreeToTerms: false,
@@ -37,7 +37,7 @@ export default function RegisterForm() {
   // State to track which fields have been touched for validation
   // This helps provide immediate feedback to the user
   const [touched, setTouched] = useState({
-    username: false,
+    email: false,
     password: false,
     confirmPassword: false,
   });
@@ -51,16 +51,16 @@ export default function RegisterForm() {
 
   // This function handles user registration by sending a POST request to the API
   const registerUser = async ({
-    username,
+    email,
     password,
   }: {
-    username: string;
+    email: string;
     password: string;
   }) => {
     const res = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) {
@@ -82,19 +82,19 @@ export default function RegisterForm() {
     // Attempt to register the user
     try {
       await registerUser({
-        username: formData.username,
+        email: formData.email,
         password: formData.password,
       });
       setSuccess(true);
       // Reset form data after successful registration
       setFormData({
-        username: '',
+        email: '',
         password: '',
         confirmPassword: '',
         agreeToTerms: false,
       });
       setTouched({
-        username: false,
+        email: false,
         password: false,
         confirmPassword: false,
       });
@@ -108,8 +108,6 @@ export default function RegisterForm() {
     } finally {
       setLoading(false);
     }
-
-    console.log('Registration data:', formData);
   };
 
   // This memoized value checks if the form is valid for submission
@@ -167,26 +165,26 @@ export default function RegisterForm() {
                 onSubmit={handleSubmit}
                 className="space-y-4"
               >
-                {/* Username Field */}
+                {/* Email Field */}
                 <div className="space-y-2">
                   <Label
-                    htmlFor="username"
+                    htmlFor="email"
                     className="text-white"
                   >
-                    Username
+                    Email
                   </Label>
                   <Input
-                    id="username"
+                    id="email"
                     type="text"
-                    placeholder="Choose your hero name"
-                    value={formData.username}
-                    onChange={(e) => handleInputChange('username', e.target.value)}
-                    onBlur={() => setTouched((prev) => ({ ...prev, username: true }))}
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
                     className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400"
                     required
                   />
-                  {touched.username && errors.username && (
-                    <span className="text-xs text-red-400">{errors.username}</span>
+                  {touched.email && errors.email && (
+                    <span className="text-xs text-red-400">{errors.email}</span>
                   )}
                 </div>
 

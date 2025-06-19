@@ -6,17 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function validateRegisterAccountFields(formData: {
-  username: string;
+  email: string;
   password: string;
   confirmPassword: string;
   agreeToTerms?: boolean;
 }) {
   return {
-    username:
-      formData.username.length < 3
-        ? "Username must be at least 3 characters."
-        : formData.username.length > 16
-        ? "Username must be at most 16 characters."
+    email:
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+        ? "Email not valid."
         : "",
     password:
       formData.password.length < 8

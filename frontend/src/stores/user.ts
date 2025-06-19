@@ -10,5 +10,8 @@ type UserStore = {
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
   setUser: (user: User) => set({ user }),
-  logout: () => set({ user: null }),
+  logout: () => {
+    localStorage.removeItem("token");
+    set({ user: null});
+  }
 }));

@@ -17,14 +17,14 @@ import (
 var jwtKey = []byte("secret-key")
 
 type Claims struct {
-	Username string `json:"username"`
-	UserID   string `json:"user_id"`
+	Email  string `json:"email"`
+	UserID string `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
 func CreateUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username" binding:"required,min=3,max=16"`
+		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required,min=8,max=16"`
 	}
 
@@ -48,7 +48,7 @@ func CreateUser(c *gin.Context) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 
 	user := models.User{
-		Username:     input.Username,
+		Email:        input.Email,
 		PasswordHash: string(hash),
 	}
 
@@ -68,7 +68,7 @@ func CreateUser(c *gin.Context) {
 
 func LoginUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username"`
+		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
@@ -80,24 +80,20 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	token, err := services.AuthenticateUser(input.Username, input.Password)
+	token, err := services.AuthenticateUser(input.Email, input.Password)
 	if err != nil {
-		switch err {
-		case services.ErrUserNotFound:
-			c.JSON(http.StatusNotFound, gin.H{
-				"ok":      false,
-				"message": err.Error(),
-			})
-		case services.ErrInvalidPassword:
+		if err == services.ErrUserNotFound || err == services.ErrInvalidPassword {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"ok":      false,
-				"message": err.Error(),
+				"message": "Incorrect email or password",
 			})
-		default:
+
+		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"ok":      false,
 				"message": "Authentication failed",
 			})
+
 		}
 		return
 	}
