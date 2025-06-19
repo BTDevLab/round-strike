@@ -67,8 +67,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       });
       const token = response.message;
 
-      console.log('my token', response);
-
       // Decode token fetched from API call and store User in Zustand.
       // Also store returned token in localstorage
       const decodedUser = jwtDecode<User>(token);
