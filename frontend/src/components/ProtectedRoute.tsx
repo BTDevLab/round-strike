@@ -28,7 +28,9 @@ function checkLogin(setUser: (user: User | null) => void) {
 }
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const setUser = useUserStore((state) => state.setUser);
+  const {
+    actions: { setUser },
+  } = useUserStore();
 
   useEffect(() => {
     checkLogin(setUser);
