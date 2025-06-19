@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,8 +8,93 @@ import { cn } from '@/lib/utils';
 // import Logo1 from '@/public/logo1.png';
 import Image from 'next/image';
 import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
+import { useState } from 'react';
+import LoadingButton from './ui/LoadingButton';
+import  { useRouter } from 'next/navigation'
+import { jwtDecode } from "jwt-decode";
+import { useUserStore } from "@/stores/user";
+import type { User } from "@/types/user";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password:""
+  });
+  // Creates the NextJs route to navigate between pages
+  const router = useRouter();
+  // Sets the Zustand store
+  const { setUser } = useUserStore();
+
+  const handleInputChange = (field: string, value: string) => {
+    setLoginData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  // This function handles the user login by sending a POST request to the login endpoint
+  const loginUser = async ({email, password} : { email: string, password: string}) => {
+    const res = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, password})
+    });
+
+    if (!res.ok){
+      const data = await res.json();
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return await res.json();
+  };
+
+  // This function handles the form submission and calls the loginUser function
+  const handleSubmit = async (e: React.FormEvent) => {
+    // Prevent default form submission behavior
+    e.preventDefault()
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Attempt to login the user
+      const response = await loginUser({email: loginData.email, password: loginData.password});
+      const token = response.message
+
+      console.log("my token", response)
+
+      // Decode token fetched from API call and store User in Zustand.
+      // Also store returned token in localstorage
+      const decodedUser = jwtDecode<User>(token)
+      setUser(decodedUser)
+      localStorage.setItem("token", token)
+
+
+      // Reset form data after successful login
+      setLoginData({
+        email: '',
+        password: ''
+      })
+
+      // Redirects user to character page once login is successful
+      router.push("/character")
+    
+    }catch(err: unknown){
+      // Handle errors from the login API
+      
+      if (err instanceof Error) {
+        setError(err.message || 'Login failed');
+      }else {
+        setError('Login failed')
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className={cn('flex flex-col gap-6', className)}
@@ -15,7 +102,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     >
       <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form 
+            onSubmit={handleSubmit}
+            className="p-6 md:p-8"
+          >
+            {error && (
+              <div className="mb-4 rounded bg-red-500/20 border border-red-500 text-red-300 px-4 py-2 text-center text-sm font-medium">
+                {error}
+              </div>
+            )}
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold text-white">Welcome back</h1>
@@ -35,7 +130,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   className="bg-white/10 border-purple-400/30 text-white placeholder:text-gray-400 focus:border-purple-400 pr-10"
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="email@example.com"
+                  value={loginData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                   required
                 />
               </div>
@@ -60,6 +157,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   placeholder="Enter your password"
                   id="password"
                   type="password"
+                  value={loginData.password}
+                  onChange={(e) => handleInputChange("password", e.target.value)}
                   required
                 />
               </div>
@@ -67,7 +166,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
               >
-                Login
+              {loading ? <LoadingButton /> : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-purple-400 text-white relative z-10 px-2">
@@ -127,7 +226,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               <div className="text-center text-sm text-white">
                 Don&apos;t have an account?{' '}
                 <a
-                  href="#"
+                  href="/register"
                   className="text-purple-400 hover:text-purple-300 underline font-medium"
                 >
                   Sign up
