@@ -3,6 +3,7 @@
 import { useUserStore } from '@/stores/user';
 import type { User } from '@/types/user';
 import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 function checkLogin(setUser: (user: User | null) => void) {
@@ -14,27 +15,34 @@ function checkLogin(setUser: (user: User | null) => void) {
       if (isExpired) {
         localStorage.removeItem('token');
         setUser(null);
-        return;
+        return false;
       }
       setUser(decodedUser);
+      return true;
     } catch (error) {
       console.error('Invalid token:', error);
       localStorage.removeItem('token');
       setUser(null);
+      return false;
     }
   } else {
     setUser(null);
+    return false;
   }
 }
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const {
     actions: { setUser },
   } = useUserStore();
 
   useEffect(() => {
-    checkLogin(setUser);
-  }, [setUser]);
+    const isLoggedIn = checkLogin(setUser);
+    if (!isLoggedIn) {
+      router.push('/login');
+    }
+  }, [router, setUser]);
 
   return <>{children}</>;
 }
