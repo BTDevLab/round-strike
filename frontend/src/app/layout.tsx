@@ -1,3 +1,4 @@
+import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -28,15 +29,8 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
           <Header />
-
           <main className="flex flex-1">{children}</main>
-
-          {/* Footer */}
-          <footer className="flex justify-center gap-2 py-6 w-full items-center px-4 md:px-6 border-t border-purple-500/30 bg-black/40">
-            <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} Round Strike. All rights reserved.
-            </p>
-          </footer>
+          <Footer />
         </div>
       </body>
     </html>
