@@ -1,8 +1,6 @@
+import Header from '@/components/layout/Header';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import Image from 'next/image';
-import Link from 'next/link';
-import MainLogo from '../../public/main-logo.png';
 import './globals.css';
 
 const geistSans = Geist({
@@ -29,36 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
-          {/* Header */}
-          <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-sm bg-black/20 border-b border-purple-500/20">
-            <Link
-              href="/"
-              className="flex items-center justify-center"
-            >
-              <div className="flex items-center space-x-2">
-                <Image
-                  src={MainLogo}
-                  alt="Round Strike Logo"
-                  className="w-12 h-12 rounded-full"
-                />
-                <span className="text-2xl font-bold text-white">Round Strike</span>
-              </div>
-            </Link>
-            <nav className="ml-auto flex gap-4 sm:gap-6">
-              <Link
-                href="/register"
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-              >
-                Create account
-              </Link>
-              <Link
-                href="/login"
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-              >
-                Login
-              </Link>
-            </nav>
-          </header>
+          <Header />
 
           <main className="flex flex-1">{children}</main>
 
