@@ -5,15 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-// import Logo1 from '@/public/logo1.png';
 import { useUserStore } from '@/stores/user';
 import type { User } from '@/types/user';
 import { jwtDecode } from 'jwt-decode';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Logo1 from '../../public/logo1.png'; // Adjust the path as necessary
-import LoadingButton from './ui/LoadingButton';
+import LoadingButton from '../ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -239,9 +237,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           </form>
           <div className="bg-muted relative hidden md:block">
             <Image
-              src={Logo1}
+              src="/logo1.png"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              fill
             />
           </div>
         </CardContent>
