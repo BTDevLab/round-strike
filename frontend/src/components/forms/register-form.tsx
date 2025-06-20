@@ -17,7 +17,7 @@ import { validateRegisterAccountFields } from '@/lib/utils';
 import { Eye, EyeOff, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import LoadingButton from './ui/LoadingButton';
+import LoadingButton from '../ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
