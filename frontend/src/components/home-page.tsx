@@ -1,12 +1,36 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from './ui/button';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from './ui/carousel';
+
+const characters = [
+  {
+    id: 1,
+    name: 'Elara, The Swiftblade',
+    level: 32,
+    class: 'Rogue',
+    image: '/placeholder.svg?height=120&width=120',
+  },
+  {
+    id: 2,
+    name: 'Kael, The Stormcaller',
+    level: 27,
+    class: 'Mage',
+    image: '/placeholder.svg?height=120&width=120',
+  },
+];
 
 export default function HomePage() {
   return (
-    <div className="flex flex-1 flex-col bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+    <div className="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-white">
@@ -17,49 +41,59 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-5xl w-full">
-          {/* Existing Characters */}
-          <Link
-            href="/character/1"
-            className="flex flex-col space-y-4"
-          >
-            <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
-              <Image
-                src="/placeholder.svg?height=120&width=120"
-                width={120}
-                height={120}
-                alt=""
-                className="rounded-full object-cover mb-3 border-2 border-purple-400"
-              />
-              <CardTitle className="text-xl font-semibold text-white">
-                Elara, The Swiftblade
-              </CardTitle>
-              <CardDescription className="text-gray-300 text-sm">
-                Level 32 - Rogue
-              </CardDescription>
-            </Card>
-            <div className="flex w-full flex-row gap-4 space-x-2">
-              <Button
-                variant="secondary"
-                className="flex-1 bg-purple-600/20 text-purple-200 hover:bg-purple-600/40 text-md cursor-pointer"
-              >
+        <div className="flex flex-col md:flex-row gap-8 justify-center items-start w-full max-w-6xl">
+          {/* Carousel Card */}
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+            <Carousel className="relative mb-4">
+              <CarouselContent>
+                {characters.map((char) => (
+                  <CarouselItem key={char.id}>
+                    <div>
+                      <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200">
+                        <Image
+                          src={char.image}
+                          width={120}
+                          height={120}
+                          alt={char.name}
+                          className="rounded-full object-cover border-2 border-purple-400"
+                        />
+                        <CardTitle className="text-xl font-semibold text-white">
+                          {char.name}
+                        </CardTitle>
+                        <CardDescription className="text-gray-300 text-sm">
+                          Level {char.level} - {char.class}
+                        </CardDescription>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+
+              <CarouselPrevious className="absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-white" />
+              <CarouselNext className="absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-white" />
+            </Carousel>
+
+            <Link href="">
+              <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200">
                 Start Game
               </Button>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
-          {/* New Character Button */}
-          <Link
-            href="/character-creation"
-            className="block"
-          >
-            <Card className="flex flex-col items-center justify-center p-6 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
-              <Plus className="h-32 w-32 text-purple-300" />
-              <CardDescription className="text-xl font-semibold text-white">
-                Create a new character
-              </CardDescription>
-            </Card>
-          </Link>
+          {/* Create New Character Card */}
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+            <Link
+              href="/character-creation"
+              className="block"
+            >
+              <Card className="flex flex-col items-center justify-center p-6 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
+                <Plus className="h-32 w-32 text-purple-300" />
+                <CardDescription className="text-xl font-semibold text-white text-center">
+                  Create a new character
+                </CardDescription>
+              </Card>
+            </Link>
+          </div>
         </div>
       </main>
     </div>
