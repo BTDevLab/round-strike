@@ -42,7 +42,6 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 justify-center items-start w-full max-w-6xl">
-          {/* Carousel Card */}
           <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
             <Carousel className="relative mb-4">
               <CarouselContent>
@@ -54,7 +53,7 @@ export default function HomePage() {
                           src={char.image}
                           width={120}
                           height={120}
-                          alt={char.name}
+                          alt=""
                           className="rounded-full object-cover border-2 border-purple-400"
                         />
                         <CardTitle className="text-xl font-semibold text-white">
@@ -69,8 +68,8 @@ export default function HomePage() {
                 ))}
               </CarouselContent>
 
-              <CarouselPrevious className="absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-white" />
-              <CarouselNext className="absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-white" />
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
             </Carousel>
 
             <Link href="">
@@ -80,7 +79,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Create New Character Card */}
           <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
             <Link
               href="/character-creation"
