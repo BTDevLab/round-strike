@@ -80,7 +80,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       });
 
       // Redirects user to dashboard page once login is successful
-      router.push('/dashboard');
+      router.push('/home');
     } catch (err: unknown) {
       // Handle errors from the login API
 
