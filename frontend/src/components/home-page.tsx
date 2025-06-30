@@ -48,7 +48,7 @@ export default function HomePage() {
                 {characters.map((char) => (
                   <CarouselItem key={char.id}>
                     <div>
-                      <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200">
+                      <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
                         <Image
                           src={char.image}
                           width={120}
