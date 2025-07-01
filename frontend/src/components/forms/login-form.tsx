@@ -79,7 +79,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
         password: '',
       });
 
-      // Redirects user to dashboard page once login is successful
+      // Redirects user to home page once login is successful
       router.push('/home');
     } catch (err: unknown) {
       // Handle errors from the login API
