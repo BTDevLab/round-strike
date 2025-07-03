@@ -15,21 +15,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+
 export default function CharacterCreationPage() {
   // Function that handle the Create Character button
-  function handleInput() {
-    console.log(`Creating character: ${charName} of class ${characterClass}`);
-    setCharName('');
+  const handleInput = async () => {
+    console.log(`Creating character: ${characterName} of class ${characterClass}`);
+    setCharacterName('');
+
+    const res = await fetch(`${API_URL}/characters`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: characterName, class: characterClass }),
+    });
+
     router.push('/home');
-  }
+  };
 
   // Function that handles the character name input field
-  function handleCharacterNameInput(value: string) {
-    setCharName(value);
-  }
+  const handleCharacterNameInput = (value: string) => {
+    setCharacterName(value);
+  };
 
   const [characterClass, setCharacterClass] = useState('knight');
-  const [charName, setCharName] = useState('');
+  const [characterName, setCharacterName] = useState('');
   const router = useRouter();
 
   const classDescription = [
@@ -89,7 +98,7 @@ export default function CharacterCreationPage() {
                       id="tabs-demo-name"
                       placeholder="Character name"
                       onChange={(e) => handleCharacterNameInput(e.target.value)}
-                      value={charName}
+                      value={characterName}
                       required
                     />
                   </div>
