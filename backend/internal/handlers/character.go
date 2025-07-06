@@ -1,3 +1,4 @@
+// Package handlers provides the HTTP handlers for the application
 package handlers
 
 import (
@@ -14,6 +15,38 @@ func GetCharacters(c *gin.Context) {
 	var characters []models.Character
 
 	if err := db.DB.Find(&characters).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":    false,
+			"error": "Failed to fetch characters",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": characters,
+	})
+}
+
+func GetCharactersByUserID(c *gin.Context) {
+	// c.Get returns a value and a boolean
+	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// The value returned by c.Get is an interface.
+	// We need to set the proper value of the response as our need. In this case, our userID is a string.
+	userID := userIDRaw.(string)
+
+	var characters []models.Character
+
+	if err := db.DB.Where("user_id = ?", userID).Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"ok":    false,
 			"error": "Failed to fetch characters",
