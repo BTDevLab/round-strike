@@ -1,7 +1,11 @@
+'use client';
+
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { useCharacterStore } from '@/stores/character';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback, useEffect } from 'react';
 import { Button } from './ui/button';
 import {
   Carousel,
@@ -11,24 +15,49 @@ import {
   CarouselPrevious,
 } from './ui/carousel';
 
-const characters = [
-  {
-    id: 1,
-    name: 'Elara, The Swiftblade',
-    level: 32,
-    class: 'Rogue',
-    image: '/placeholder.svg?height=120&width=120',
-  },
-  {
-    id: 2,
-    name: 'Kael, The Stormcaller',
-    level: 27,
-    class: 'Mage',
-    image: '/placeholder.svg?height=120&width=120',
-  },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 export default function HomePage() {
+  const {
+    state: { characters },
+    actions: { setCharacters },
+  } = useCharacterStore();
+
+  const getCharacters = useCallback(
+    async (token: string) => {
+      const res = await fetch(`${API_URL}/characters/user`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { ok, message } = await res.json();
+
+      if (!ok) {
+        throw new Error(message || 'Failed to fetch characters');
+      }
+
+      setCharacters(message);
+    },
+    [setCharacters],
+  );
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const fetchCharacters = async () => {
+      if (token) {
+        try {
+          await getCharacters(token);
+        } catch (error) {
+          console.error('Failed to fetch characters:', error);
+        }
+      }
+    };
+    if (token) fetchCharacters();
+  }, [getCharacters]);
+
   return (
     <div className="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
