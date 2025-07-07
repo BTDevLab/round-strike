@@ -89,7 +89,7 @@ export default function HomePage() {
                           {char.name}
                         </CardTitle>
                         <CardDescription className="text-gray-300 text-sm">
-                          Level {char.level} - {char.class}
+                          Level {char.level} - {char.class || 'Unknown Class'}
                         </CardDescription>
                       </Card>
                     </div>
