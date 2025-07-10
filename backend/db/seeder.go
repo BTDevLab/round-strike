@@ -20,8 +20,6 @@ func SeedClasses() {
 		{
 			Name:             "Knight",
 			Description:      "A strong fighter with heavy armor. Great for taking hits and dealing solid melee damage.",
-			BaseHP:           120,
-			BaseMP:           50,
 			BaseStrength:     8,
 			BaseIntelligence: 3,
 			BaseDexterity:    4,
@@ -32,8 +30,6 @@ func SeedClasses() {
 		{
 			Name:             "Cleric",
 			Description:      "A support class that can heal and use light magic. Balanced and good for longer battles.",
-			BaseHP:           90,
-			BaseMP:           100,
 			BaseStrength:     4,
 			BaseIntelligence: 6,
 			BaseDexterity:    3,
@@ -44,8 +40,6 @@ func SeedClasses() {
 		{
 			Name:             "Wizard",
 			Description:      "A powerful spellcaster with high damage. Fragile, but can destroy enemies from a distance.",
-			BaseHP:           70,
-			BaseMP:           150,
 			BaseStrength:     2,
 			BaseIntelligence: 9,
 			BaseDexterity:    3,
@@ -56,8 +50,6 @@ func SeedClasses() {
 		{
 			Name:             "Hunter",
 			Description:      "A quick and agile archer. Good at striking from afar and avoiding damage.",
-			BaseHP:           100,
-			BaseMP:           70,
 			BaseStrength:     5,
 			BaseIntelligence: 4,
 			BaseDexterity:    8,
