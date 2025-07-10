@@ -20,16 +20,44 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 export default function CharacterCreationPage() {
   // Function that handle the Create Character button
   const handleInput = async () => {
-    console.log(`Creating character: ${characterName} of class ${characterClass}`);
-    setCharacterName('');
+    try {
+      console.log(`Creating character: ${characterName} of class ${characterClass}`);
 
-    const res = await fetch(`${API_URL}/characters`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: characterName, class: characterClass }),
-    });
+      const selectedClass = classDescription.find((cls) => cls.key === characterClass);
+      if (!selectedClass) {
+        console.log('Error', 'Selected class not found.', 'error');
+        return;
+      }
 
-    router.push('/home');
+      console.log('MY SELECTED CLASS', selectedClass);
+
+      // Retreive JWT from the local storage
+      const token = localStorage.getItem('token');
+      // TODO. CHECK IF THATS CORRECT. I PERSONALLY DON'T THINK IT SHOULD BE LIKE THIS
+      if (!token) {
+        console.log("'Error', 'Authentication token not found. Please log in.', 'error'");
+        router.push('/login');
+        return;
+      }
+      // END TODO...
+
+      const res = await fetch(`${API_URL}/characters`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+
+        body: JSON.stringify({ name: characterName, class_id: selectedClass.id }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to create character.');
+      }
+
+      setCharacterName('');
+      router.push('/home');
+    } catch (error: any) {
+      console.error('Error creating character:', error);
+    }
   };
 
   // Function that handles the character name input field
@@ -44,24 +72,28 @@ export default function CharacterCreationPage() {
   const classDescription = [
     {
       key: 'knight',
+      id: '98cbfb14-ff65-451f-a05e-7095db68ba7d',
       name: 'Knight',
       description:
         'A strong fighter with heavy armor. Great for taking hits and dealing solid melee damage.',
     },
     {
       key: 'cleric',
+      id: '2ed39b84-d1ff-4df1-909b-50fabd4ea3c0',
       name: 'Cleric',
       description:
         'A support class that can heal and use light magic. Balanced and good for longer battles.',
     },
     {
       key: 'wizard',
+      id: '5db93c49-6ca9-4bee-881e-27c5dc72e961',
       name: 'Wizard',
       description:
         'A powerful spellcaster with high damage. Fragile, but can destroy enemies from a distance.',
     },
     {
       key: 'hunter',
+      id: '61a4ea3b-2703-4cf5-9b90-3e2c6701bddb',
       name: 'Hunter',
       description:
         'A quick and agile archer. Good at striking from afar and avoiding damage.',
