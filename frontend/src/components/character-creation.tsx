@@ -13,39 +13,50 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+
+interface Class {
+  ID: string;
+  name: string;
+  description: string;
+  base_strength: number;
+  base_intelligence: number;
+  base_dexterity: number;
+  base_defense: number;
+  base_max_hp: number;
+  base_max_mp: number;
+}
 
 export default function CharacterCreationPage() {
   // Function that handle the Create Character button
   const handleInput = async () => {
     try {
-      console.log(`Creating character: ${characterName} of class ${characterClass}`);
-
-      const selectedClass = classDescription.find((cls) => cls.key === characterClass);
-      if (!selectedClass) {
-        console.log('Error', 'Selected class not found.', 'error');
-        return;
-      }
-
-      console.log('MY SELECTED CLASS', selectedClass);
-
       // Retreive JWT from the local storage
       const token = localStorage.getItem('token');
       // TODO. CHECK IF THATS CORRECT. I PERSONALLY DON'T THINK IT SHOULD BE LIKE THIS
+      // SHOULD IT REDIRECT TO LOGIN IF TOKEN NOT FOUND?
       if (!token) {
-        console.log("'Error', 'Authentication token not found. Please log in.', 'error'");
         router.push('/login');
         return;
       }
       // END TODO...
 
+      const selectedClass = classes.find(
+        (cls) => cls.name.toLowerCase() === characterClass,
+      );
+      if (!selectedClass) {
+        console.error('Selected class not found.');
+        return;
+      }
+
+      // Calls character API to create user character
       const res = await fetch(`${API_URL}/characters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 
-        body: JSON.stringify({ name: characterName, class_id: selectedClass.id }),
+        body: JSON.stringify({ name: characterName, class_id: selectedClass.ID }),
       });
 
       if (!res.ok) {
@@ -67,81 +78,93 @@ export default function CharacterCreationPage() {
 
   const [characterClass, setCharacterClass] = useState('knight');
   const [characterName, setCharacterName] = useState('');
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const classDescription = [
-    {
-      key: 'knight',
-      id: '98cbfb14-ff65-451f-a05e-7095db68ba7d',
-      name: 'Knight',
-      description:
-        'A strong fighter with heavy armor. Great for taking hits and dealing solid melee damage.',
-    },
-    {
-      key: 'cleric',
-      id: '2ed39b84-d1ff-4df1-909b-50fabd4ea3c0',
-      name: 'Cleric',
-      description:
-        'A support class that can heal and use light magic. Balanced and good for longer battles.',
-    },
-    {
-      key: 'wizard',
-      id: '5db93c49-6ca9-4bee-881e-27c5dc72e961',
-      name: 'Wizard',
-      description:
-        'A powerful spellcaster with high damage. Fragile, but can destroy enemies from a distance.',
-    },
-    {
-      key: 'hunter',
-      id: '61a4ea3b-2703-4cf5-9b90-3e2c6701bddb',
-      name: 'Hunter',
-      description:
-        'A quick and agile archer. Good at striking from afar and avoiding damage.',
-    },
-  ];
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        // Calls class API to retreive class ID from class name
+        const classesResponse = await fetch(`${API_URL}/classes`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!classesResponse.ok) {
+          const errorData = await classesResponse.json();
+          throw new Error(errorData.error || 'Failed to retreive classes');
+        }
+
+        const classesData = await classesResponse.json();
+        const fetchedClasses = classesData.message;
+
+        setClasses(fetchedClasses);
+        setLoading(false);
+
+        if (fetchedClasses.length > 0) {
+          setCharacterClass(fetchedClasses[0].name.toLowerCase());
+        }
+      } catch (err: any) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchClasses();
+  }, []);
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
       <div className="flex w-full max-w-sm flex-col place-content-center gap-6">
-        <Tabs
-          defaultValue="knight"
-          onValueChange={setCharacterClass}
-        >
-          <TabsList className="w-full">
-            <TabsTrigger value="knight">Knight</TabsTrigger>
-            <TabsTrigger value="cleric">Cleric</TabsTrigger>
-            <TabsTrigger value="wizard">Wizard</TabsTrigger>
-            <TabsTrigger value="hunter">Hunter</TabsTrigger>
-          </TabsList>
-          {classDescription.map((cls) => (
-            <TabsContent
-              value={cls.key}
-              key={cls.key}
-            >
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>{cls.name}</CardTitle>
-                  <CardDescription>{cls.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="tabs-demo-name">Name</Label>
-                    <Input
-                      id="tabs-demo-name"
-                      placeholder="Character name"
-                      onChange={(e) => handleCharacterNameInput(e.target.value)}
-                      value={characterName}
-                      required
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button onClick={handleInput}>Create a {cls.name}</Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
+        {loading && <p>Loading classes...</p>}
+        {error && <p>Error: {error}</p>}
+
+        {!loading && !error && (
+          <Tabs
+            defaultValue={characterClass}
+            onValueChange={setCharacterClass}
+          >
+            <TabsList className="w-full">
+              {classes.map((cls) => (
+                <TabsTrigger
+                  key={cls.ID}
+                  value={cls.name.toLowerCase()}
+                >
+                  {cls.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {classes.map((cls) => (
+              <TabsContent
+                value={cls.name.toLowerCase()}
+                key={cls.ID}
+              >
+                <Card className="w-full">
+                  <CardHeader>
+                    <CardTitle>{cls.name}</CardTitle>
+                    <CardDescription>{cls.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid gap-6">
+                    <div className="grid gap-3">
+                      <Label htmlFor="tabs-demo-name">Name</Label>
+                      <Input
+                        id="tabs-demo-name"
+                        placeholder="Character name"
+                        onChange={(e) => handleCharacterNameInput(e.target.value)}
+                        value={characterName}
+                        required
+                      />
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button onClick={handleInput}>Create a {cls.name}</Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </div>
     </main>
   );
