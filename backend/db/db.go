@@ -29,6 +29,7 @@ func Connect() {
 	}
 
 	err = DB.AutoMigrate(
+		&models.Class{},
 		&models.User{},
 		&models.Character{},
 	)
@@ -37,4 +38,6 @@ func Connect() {
 	} else {
 		log.Println("AutoMigrate succeeded")
 	}
+
+	SeedClasses()
 }

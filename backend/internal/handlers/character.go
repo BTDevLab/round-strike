@@ -2,6 +2,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/tarikcarvalho08/round-strike/backend/db"
@@ -10,6 +11,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+type CreateCharacterRequest struct {
+	Name    string `json:"name" binding:"required"`
+	ClassID string `json:"class_id" binding:"required,uuid"`
+}
 
 func GetCharacters(c *gin.Context) {
 	var characters []models.Character
@@ -46,7 +52,7 @@ func GetCharactersByUserID(c *gin.Context) {
 
 	var characters []models.Character
 
-	if err := db.DB.Where("user_id = ?", userID).Find(&characters).Error; err != nil {
+	if err := db.DB.Where("user_id = ?", userID).Preload("Class").Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"ok":    false,
 			"error": "Failed to fetch characters",
@@ -76,7 +82,7 @@ func CreateCharacter(c *gin.Context) {
 	// We need to set the proper value of the response as our need. In this case, our userID is a string.
 	userID := userIDRaw.(string)
 
-	var inputCharacter models.Character
+	var inputCharacter CreateCharacterRequest
 
 	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -86,7 +92,21 @@ func CreateCharacter(c *gin.Context) {
 		return
 	}
 
-	character := services.BuildCharacter(inputCharacter, userID)
+	character, err := services.BuildCharacter(inputCharacter.Name, userID, inputCharacter.ClassID)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("Class with ID '%s' not found", inputCharacter.ClassID) {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"ok":    false,
+				"error": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":    false,
+			"error": "Failed to create character:" + err.Error(),
+		})
+		return
+	}
 
 	if err := db.DB.Create(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
