@@ -38,6 +38,7 @@ export default function HomePage() {
       if (!ok) {
         throw new Error(message || 'Failed to fetch characters');
       }
+      console.log('🚀 ~ characters:', characters);
 
       setCharacters(message);
     },
@@ -89,7 +90,7 @@ export default function HomePage() {
                           {char.name}
                         </CardTitle>
                         <CardDescription className="text-gray-300 text-sm">
-                          {char.class || 'Unknown Class'} - Level {char.level}
+                          {char.class.name || 'Unknown Class'} - Level {char.level}
                         </CardDescription>
                       </Card>
                     </div>

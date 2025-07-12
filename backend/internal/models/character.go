@@ -10,5 +10,5 @@ type Character struct {
 	UserID     string `json:"user_id" gorm:"type:char(36);not null"`
 	CharacterStats
 	ClassID string `json:"class_id" gorm:"type:char(36);not null"`
-	Class   Class  `json:"class,omitempty" gorm:"foreignKey:ClassID"`
+	Class   Class  `json:"class" gorm:"foreignKey:ClassID"`
 }

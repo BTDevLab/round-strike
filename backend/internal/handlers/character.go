@@ -52,7 +52,7 @@ func GetCharactersByUserID(c *gin.Context) {
 
 	var characters []models.Character
 
-	if err := db.DB.Where("user_id = ?", userID).Find(&characters).Error; err != nil {
+	if err := db.DB.Where("user_id = ?", userID).Preload("Class").Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"ok":    false,
 			"error": "Failed to fetch characters",
