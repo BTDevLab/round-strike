@@ -14,7 +14,7 @@ type Base struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
 
-// GORM hook to set the ID before creating, ensuring the ID field is automatically populated
+// BeforeCreate is a GORM hook that sets the ID before creating, ensuring the ID field is automatically populated.
 func (base *Base) BeforeCreate(tx *gorm.DB) (err error) {
 	if base.ID == "" {
 		base.ID = uuid.NewString()

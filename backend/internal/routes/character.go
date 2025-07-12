@@ -1,3 +1,4 @@
+// Package routes defines the API routes for the application.
 package routes
 
 import (
@@ -18,6 +19,7 @@ func CharacterRoutes(route *gin.Engine) {
 	{
 		characters.POST("", handlers.CreateCharacter)
 		characters.GET("/:id", handlers.GetCharacterByID)
+		characters.GET("/user", handlers.GetCharactersByUserID)
 		characters.DELETE("/:id", handlers.DeleteCharacter)
 		characters.PUT("/:id", handlers.UpdateCharacter)
 	}

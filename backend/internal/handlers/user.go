@@ -87,13 +87,11 @@ func LoginUser(c *gin.Context) {
 				"ok":      false,
 				"message": "Incorrect email or password",
 			})
-
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"ok":      false,
 				"message": "Authentication failed",
 			})
-
 		}
 		return
 	}
@@ -106,7 +104,7 @@ func LoginUser(c *gin.Context) {
 
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	if err := db.DB.Find(&users).Error; err != nil {
+	if err := db.DB.Preload("Characters").Find(&users).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"ok":      false,
 			"message": "Failed to fetch users",
@@ -124,7 +122,7 @@ func GetUserByID(c *gin.Context) {
 	var user models.User
 	id := c.Param("id")
 
-	if err := db.DB.First(&user, id).Error; err != nil {
+	if err := db.DB.Preload("Characters").First(&user, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"ok":      false,
 			"message": "User not found",

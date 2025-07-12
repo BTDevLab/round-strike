@@ -1,7 +1,7 @@
 import { CharacterStats } from "./character-stats";
 
 export type Character = {
-  id: string;
+  ID: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
