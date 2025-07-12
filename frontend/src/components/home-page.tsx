@@ -80,7 +80,7 @@ export default function HomePage() {
                     <div>
                       <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
                         <Image
-                          src={char.image || '/default-avatar.png'}
+                          src={'/default-avatar.png'}
                           width={120}
                           height={120}
                           alt={char.name}
