@@ -1,7 +1,8 @@
 import { CharacterStats } from "./character-stats";
+import { Class } from "./class";
 
 export type Character = {
-  id: string;
+  ID: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -11,5 +12,7 @@ export type Character = {
   hp: number;
   mp: number;
   userId: string;
+  class_id: string;
+  class: Class;
   characterStats: CharacterStats;
 };

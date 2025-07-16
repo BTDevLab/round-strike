@@ -1,7 +1,11 @@
+'use client';
+
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { useCharacterStore } from '@/stores/character';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback, useEffect } from 'react';
 import { Button } from './ui/button';
 import {
   Carousel,
@@ -11,24 +15,49 @@ import {
   CarouselPrevious,
 } from './ui/carousel';
 
-const characters = [
-  {
-    id: 1,
-    name: 'Elara, The Swiftblade',
-    level: 32,
-    class: 'Rogue',
-    image: '/placeholder.svg?height=120&width=120',
-  },
-  {
-    id: 2,
-    name: 'Kael, The Stormcaller',
-    level: 27,
-    class: 'Mage',
-    image: '/placeholder.svg?height=120&width=120',
-  },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 export default function HomePage() {
+  const {
+    state: { characters },
+    actions: { setCharacters },
+  } = useCharacterStore();
+
+  const getCharacters = useCallback(
+    async (token: string) => {
+      const res = await fetch(`${API_URL}/characters/user`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { ok, message } = await res.json();
+
+      if (!ok) {
+        throw new Error(message || 'Failed to fetch characters');
+      }
+
+      setCharacters(message);
+    },
+    [setCharacters],
+  );
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const fetchCharacters = async () => {
+      if (token) {
+        try {
+          await getCharacters(token);
+        } catch (error) {
+          console.error('Failed to fetch characters:', error);
+        }
+      }
+    };
+    if (token) fetchCharacters();
+  }, [getCharacters]);
+
   return (
     <div className="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
@@ -42,42 +71,44 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 justify-center items-start w-full max-w-6xl">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
-            <Carousel className="relative mb-4">
-              <CarouselContent>
-                {characters.map((char) => (
-                  <CarouselItem key={char.id}>
-                    <div>
-                      <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
-                        <Image
-                          src={char.image}
-                          width={120}
-                          height={120}
-                          alt=""
-                          className="rounded-full object-cover border-2 border-purple-400"
-                        />
-                        <CardTitle className="text-xl font-semibold text-white">
-                          {char.name}
-                        </CardTitle>
-                        <CardDescription className="text-gray-300 text-sm">
-                          Level {char.level} - {char.class}
-                        </CardDescription>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+          {characters.length > 0 && (
+            <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+              <Carousel className="relative mb-4">
+                <CarouselContent>
+                  {characters.map((char) => (
+                    <CarouselItem key={char.ID}>
+                      <div>
+                        <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
+                          <Image
+                            src={'/default-avatar.png'}
+                            width={120}
+                            height={120}
+                            alt={char.name}
+                            className="rounded-full object-cover border-2 border-purple-400"
+                          />
+                          <CardTitle className="text-xl font-semibold text-white">
+                            {char.name}
+                          </CardTitle>
+                          <CardDescription className="text-gray-300 text-sm">
+                            {char.class.name || 'Unknown Class'} - Level {char.level}
+                          </CardDescription>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
 
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
-            </Carousel>
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
+              </Carousel>
 
-            <Link href="">
-              <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200">
-                Start Game
-              </Button>
-            </Link>
-          </div>
+              <Link href="">
+                <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200">
+                  Start Game
+                </Button>
+              </Link>
+            </div>
+          )}
 
           <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
             <Link
