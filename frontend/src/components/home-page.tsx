@@ -2,10 +2,11 @@
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { useCharacterStore } from '@/stores/character';
-import { Plus } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import DeleteCharacter from './forms/delete-character';
 import { Button } from './ui/button';
 import {
   Carousel,
@@ -23,40 +24,58 @@ export default function HomePage() {
     actions: { setCharacters },
   } = useCharacterStore();
 
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const getCharacters = useCallback(
     async (token: string) => {
-      const res = await fetch(`${API_URL}/characters/user`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      try {
+        setIsLoading(true);
+        const res = await fetch(`${API_URL}/characters/user`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      const { ok, message } = await res.json();
+        const { ok, message } = await res.json();
 
-      if (!ok) {
-        throw new Error(message || 'Failed to fetch characters');
+        if (!ok) {
+          throw new Error(message || 'Failed to fetch characters');
+        }
+
+        setCharacters(message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Failed to fetch characters:', err);
+        }
+      } finally {
+        setIsLoading(false);
       }
-
-      setCharacters(message);
     },
     [setCharacters],
   );
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const fetchCharacters = async () => {
-      if (token) {
-        try {
-          await getCharacters(token);
-        } catch (error) {
-          console.error('Failed to fetch characters:', error);
-        }
+    if (token) {
+      getCharacters(token);
+      if (isDeleted) {
+        setIsDeleted(false);
       }
-    };
-    if (token) fetchCharacters();
-  }, [getCharacters]);
+    } else {
+      setIsLoading(false);
+    }
+  }, [isDeleted, getCharacters]);
+
+  if (isLoading) {
+    return (
+      <div className="flex w-screen items-center justify-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+        <Loader2 className="h-16 w-16 animate-spin text-purple-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
@@ -78,7 +97,11 @@ export default function HomePage() {
                   {characters.map((char) => (
                     <CarouselItem key={char.ID}>
                       <div>
-                        <Card className="flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
+                        <Card className="relative flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
+                          <DeleteCharacter
+                            charID={char.ID}
+                            setIsDeleted={setIsDeleted}
+                          />
                           <Image
                             src={'/default-avatar.png'}
                             width={120}
