@@ -5,7 +5,7 @@ import { useCharacterStore } from '@/stores/character';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import DeleteCharacter from './forms/delete-character';
 import { Button } from './ui/button';
 import {
@@ -23,6 +23,8 @@ export default function HomePage() {
     state: { characters },
     actions: { setCharacters },
   } = useCharacterStore();
+
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const getCharacters = useCallback(
     async (token: string) => {
@@ -59,6 +61,16 @@ export default function HomePage() {
     if (token) fetchCharacters();
   }, [getCharacters]);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (isDeleted) {
+      if (token) {
+        getCharacters(token);
+        setIsDeleted(false);
+      }
+    }
+  }, [isDeleted, getCharacters]);
+
   return (
     <div className="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
@@ -80,7 +92,10 @@ export default function HomePage() {
                     <CarouselItem key={char.ID}>
                       <div>
                         <Card className="relative flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
-                          <DeleteCharacter />
+                          <DeleteCharacter
+                            charID={char.ID}
+                            setIsDeleted={setIsDeleted}
+                          />
                           <Image
                             src={'/default-avatar.png'}
                             width={120}
