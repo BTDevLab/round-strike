@@ -121,15 +121,15 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 justify-center items-start w-full max-w-6xl">
+        <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch w-full max-w-6xl">
           {characters.length > 0 && (
-            <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+            <div className="flex flex-col w-full max-w-sm flex-shrink-0">
               <Carousel className="relative mb-4">
                 <CarouselContent>
                   {characters.map((char) => (
                     <CarouselItem key={char.ID}>
-                      <div>
-                        <Card className="relative flex flex-col items-center p-4 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
+                      <div className="h-80 min-h-80 max-h-80 flex">
+                        <Card className="relative flex flex-col items-center p-4 h-full w-full bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 transition-all duration-200 cursor-pointer">
                           <DeleteCharacter
                             charID={char.ID}
                             setIsDeleted={setIsDeleted}
@@ -152,38 +152,35 @@ export default function HomePage() {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-
                 <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
                 <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
               </Carousel>
-
               <Link href="">
-                <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200">
+                <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200 mt-2">
                   Start Game
                 </Button>
               </Link>
             </div>
           )}
 
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+          <div className="flex flex-col w-full max-w-sm h-80 min-h-80 max-h-80 overflow-hidden flex-shrink-0">
             <Dialog
               open={isCreateCharDialogOpen}
               onOpenChange={setIsCreateCharDialogOpen}
             >
               <DialogTrigger asChild>
-                <Card className="flex flex-col items-center justify-center p-6 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
+                <Card className="flex flex-col items-center justify-center p-6 h-full bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
                   <Plus className="h-32 w-32 text-purple-300" />
                   <CardDescription className="text-xl font-semibold text-white text-center">
                     Create a new character
                   </CardDescription>
                 </Card>
               </DialogTrigger>
-
               <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white border-purple-700">
                 <DialogHeader>
                   <DialogTitle>Create New Character</DialogTitle>
                   <DialogDescription>
-                    Enter your character's name and choose their class.
+                    Enter your character&#39;s name and choose their class.
                   </DialogDescription>
                 </DialogHeader>
                 <CharacterCreationForm
