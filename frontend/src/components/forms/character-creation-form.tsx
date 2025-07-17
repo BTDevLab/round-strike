@@ -1,4 +1,3 @@
-// src/components/forms/character-creation-form.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Class } from '@/types/class';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
@@ -67,6 +67,11 @@ export default function CharacterCreationForm({
       setCharacterName('');
       onCharacterCreated();
       onCloseDialog();
+      console.log(
+        'Character successfully created! Attempting to show toast for:',
+        characterName,
+      );
+      toast.success(`${characterName} is ready for battle!`);
     } catch (error: any) {
       console.error('Error creating character:', error);
       setError(error.message || 'An unexpected error occurred.');
