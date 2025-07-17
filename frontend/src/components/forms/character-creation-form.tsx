@@ -67,14 +67,11 @@ export default function CharacterCreationForm({
       setCharacterName('');
       onCharacterCreated();
       onCloseDialog();
-      console.log(
-        'Character successfully created! Attempting to show toast for:',
-        characterName,
-      );
       toast.success(`${characterName} is ready for battle!`);
     } catch (error: any) {
       console.error('Error creating character:', error);
       setError(error.message || 'An unexpected error occurred.');
+      toast.error(`Failed to create your character`);
     }
   };
 
