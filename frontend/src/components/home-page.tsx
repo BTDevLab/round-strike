@@ -1,10 +1,20 @@
 'use client';
 
+import CharacterCreationForm from '@/components/forms/character-creation-form';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useCharacterStore } from '@/stores/character';
 import { Loader2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import DeleteCharacter from './forms/delete-character';
 import { Button } from './ui/button';
@@ -24,8 +34,11 @@ export default function HomePage() {
     actions: { setCharacters },
   } = useCharacterStore();
 
+  const router = useRouter();
+
   const [isDeleted, setIsDeleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateCharDialogOpen, setIsCreateCharDialogOpen] = useState(false);
 
   const getCharacters = useCallback(
     async (token: string) => {
@@ -68,6 +81,25 @@ export default function HomePage() {
       setIsLoading(false);
     }
   }, [isDeleted, getCharacters]);
+
+  const handleCharacterCreated = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await getCharacters(token);
+      } catch (error) {
+        console.error('Failed to re-fetch characters after creation:', error);
+      }
+    }
+  };
+
+  const handleCloseCreateCharDialog = () => {
+    setIsCreateCharDialogOpen(false);
+  };
+
+  const handleAuthError = () => {
+    router.push('/login');
+  };
 
   if (isLoading) {
     return (
@@ -134,17 +166,33 @@ export default function HomePage() {
           )}
 
           <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
-            <Link
-              href="/character-creation"
-              className="block"
+            <Dialog
+              open={isCreateCharDialogOpen}
+              onOpenChange={setIsCreateCharDialogOpen}
             >
-              <Card className="flex flex-col items-center justify-center p-6 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
-                <Plus className="h-32 w-32 text-purple-300" />
-                <CardDescription className="text-xl font-semibold text-white text-center">
-                  Create a new character
-                </CardDescription>
-              </Card>
-            </Link>
+              <DialogTrigger asChild>
+                <Card className="flex flex-col items-center justify-center p-6 h-64 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 hover:from-purple-800/60 hover:to-pink-800/60 transition-all duration-200 cursor-pointer">
+                  <Plus className="h-32 w-32 text-purple-300" />
+                  <CardDescription className="text-xl font-semibold text-white text-center">
+                    Create a new character
+                  </CardDescription>
+                </Card>
+              </DialogTrigger>
+
+              <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white border-purple-700">
+                <DialogHeader>
+                  <DialogTitle>Create New Character</DialogTitle>
+                  <DialogDescription>
+                    Enter your character's name and choose their class.
+                  </DialogDescription>
+                </DialogHeader>
+                <CharacterCreationForm
+                  onCharacterCreated={handleCharacterCreated}
+                  onCloseDialog={handleCloseCreateCharDialog}
+                  onAuthError={handleAuthError}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </main>
