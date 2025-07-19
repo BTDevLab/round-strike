@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tarikcarvalho08/round-strike/backend/db"
 	"github.com/tarikcarvalho08/round-strike/backend/internal/models"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/services"
+	"github.com/tarikcarvalho08/round-strike/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
@@ -15,92 +17,121 @@ import (
 var jwtKey = []byte("secret-key")
 
 type Claims struct {
-	Username string `json:"username"`
-	UserID   string `json:"user_id"`
+	Email  string `json:"email"`
+	UserID string `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
 func CreateUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=8,max=16"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		if ve, ok := err.(validator.ValidationErrors); ok {
+			validationErrors := utils.FormatCreateUserValidationErrors(ve)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"ok":      false,
+				"message": "Validation error",
+				"errors":  validationErrors,
+			})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Invalid input data",
+		})
 		return
 	}
 
 	hash, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 
 	user := models.User{
-		Username:     input.Username,
+		Email:        input.Email,
 		PasswordHash: string(hash),
 	}
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create user"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Failed to create user",
+		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully!"})
+	c.JSON(http.StatusCreated, gin.H{
+		"ok":      true,
+		"message": "User created successfully!",
+	})
 }
 
 func LoginUser(c *gin.Context) {
 	var input struct {
-		Username string `json:"username"`
+		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":      false,
+			"message": "Invalid input data",
+		})
 		return
 	}
 
-	var user models.User
-	if err := db.DB.Where("username = ?", input.Username).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	token, err := services.AuthenticateUser(input.Email, input.Password)
+	if err != nil {
+		if err == services.ErrUserNotFound || err == services.ErrInvalidPassword {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"ok":      false,
+				"message": "Incorrect email or password",
+			})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"ok":      false,
+				"message": "Authentication failed",
+			})
+		}
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password"})
-		return
-	}
-
-	expirationTime := time.Now().Add(1 * time.Hour)
-	claims := &Claims{
-		Username: user.Username,
-		UserID:   user.ID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, _ := token.SignedString(jwtKey)
-
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": token,
+	})
 }
 
 func GetUsers(c *gin.Context) {
 	var users []models.User
-	if err := db.DB.Find(&users).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+	if err := db.DB.Preload("Characters").Find(&users).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":      false,
+			"message": "Failed to fetch users",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": users,
+	})
 }
 
 func GetUserByID(c *gin.Context) {
 	var user models.User
 	id := c.Param("id")
 
-	if err := db.DB.First(&user, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	if err := db.DB.Preload("Characters").First(&user, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"ok":      false,
+			"message": "User not found",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": user,
+	})
 }

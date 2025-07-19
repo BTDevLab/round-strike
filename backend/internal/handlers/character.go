@@ -1,6 +1,8 @@
+// Package handlers provides the HTTP handlers for the application
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/tarikcarvalho08/round-strike/backend/db"
@@ -10,26 +12,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CreateCharacterRequest struct {
+	Name    string `json:"name" binding:"required"`
+	ClassID string `json:"class_id" binding:"required,uuid"`
+}
+
 func GetCharacters(c *gin.Context) {
 	var characters []models.Character
 
 	if err := db.DB.Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to fetch characters",
+			"ok":    false,
+			"error": "Failed to fetch characters",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, characters)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": characters,
+	})
 }
 
-func CreateCharacter(c *gin.Context) {
-
+func GetCharactersByUserID(c *gin.Context) {
 	// c.Get returns a value and a boolean
 	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
 	userIDRaw, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
 			"error": "Unauthorized",
 		})
 		return
@@ -39,57 +50,87 @@ func CreateCharacter(c *gin.Context) {
 	// We need to set the proper value of the response as our need. In this case, our userID is a string.
 	userID := userIDRaw.(string)
 
-	var inputCharacter models.Character
+	var characters []models.Character
 
-	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error creating character",
-		})
-		return
-	}
-
-	character := services.GenerateCharacterDefaultStats(inputCharacter)
-	character.UserID = userID
-
-	if err := db.DB.Create(&character).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "failed to create character",
-		})
-		return
-	}
-
-	c.JSON(http.StatusCreated, character)
-}
-
-func DeleteCharacter(c *gin.Context) {
-	id := c.Param("id")
-	var character models.Character
-
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
-		})
-		return
-	}
-
-	if err := db.DB.Delete(&character).Error; err != nil {
+	if err := db.DB.Where("user_id = ?", userID).Preload("Class").Find(&characters).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete character",
+			"ok":    false,
+			"error": "Failed to fetch characters",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": "character deleted!",
+		"ok":      true,
+		"message": characters,
 	})
 }
 
-func GetCharacterByID(c *gin.Context) {
+func CreateCharacter(c *gin.Context) {
+	// c.Get returns a value and a boolean
+	// So here it checks if the userID exists in the gin Context, which was added by the middleware.
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	// The value returned by c.Get is an interface.
+	// We need to set the proper value of the response as our need. In this case, our userID is a string.
+	userID := userIDRaw.(string)
+
+	var inputCharacter CreateCharacterRequest
+
+	if err := c.ShouldBindJSON(&inputCharacter); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":    false,
+			"error": "Error creating character",
+		})
+		return
+	}
+
+	character, err := services.BuildCharacter(inputCharacter.Name, userID, inputCharacter.ClassID)
+	if err != nil {
+		if err.Error() == fmt.Sprintf("Class with ID '%s' not found", inputCharacter.ClassID) {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"ok":    false,
+				"error": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":    false,
+			"error": "Failed to create character:" + err.Error(),
+		})
+		return
+	}
+
+	if err := db.DB.Create(&character).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ok":    false,
+			"error": "Failed to create character",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"ok":      true,
+		"message": "Character created successfully!",
+	})
+}
+
+func DeleteCharacter(c *gin.Context) {
 	id := c.Param("id")
 
 	userIDRaw, exists := c.Get("userID")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
 		return
 	}
 
@@ -98,44 +139,99 @@ func GetCharacterByID(c *gin.Context) {
 
 	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
+			"ok":    false,
+			"error": "Character not found",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	if err := db.DB.Delete(&character).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ok":    false,
+			"error": "Failed to delete character",
+		})
+		return
+	}
+
+	c.JSON(http.StatusNoContent, "")
+}
+
+func GetCharacterByID(c *gin.Context) {
+	id := c.Param("id")
+
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	userID := userIDRaw.(string)
+	var character models.Character
+
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"ok":    false,
+			"error": "Character not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": character,
+	})
 }
 
 func UpdateCharacter(c *gin.Context) {
 	id := c.Param("id")
-	var character models.Character
 
-	if err := db.DB.First(&character, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "character not found",
+	userIDRaw, exists := c.Get("userID")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"ok":    false,
+			"error": "Unauthorized",
 		})
 		return
 	}
+
+	userID := userIDRaw.(string)
+	var character models.Character
+
+	if err := db.DB.Where("id = ? AND user_id = ?", id, userID).First(&character).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"ok":    false,
+			"error": "Character not found",
+		})
+		return
+	}
+
 	// GPT said its better to use Save instead of Update in this case, so it updates all the fields of the structure
 	// Also, it is updating each field from the request, to the user, and then saving this user back into the DB (not sure if that's the ideal)
 	var input models.Character
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid input",
+			"ok":    false,
+			"error": "Invalid input",
 		})
 		return
 	}
 
 	character.Name = input.Name
-	character.HP = input.HP
-	character.MP = input.MP
 
 	if err := db.DB.Save(&character).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error updating character",
+			"ok":    false,
+			"error": "Error updating character!",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, character)
+	c.JSON(http.StatusOK, gin.H{
+		"ok":      true,
+		"message": "Character updated successfully!",
+	})
 }

@@ -9,4 +9,6 @@ type Character struct {
 	MP         int    `json:"mp" gorm:"type:int;not null"`
 	UserID     string `json:"user_id" gorm:"type:char(36);not null"`
 	CharacterStats
+	ClassID string `json:"class_id" gorm:"type:char(36);not null"`
+	Class   Class  `json:"class" gorm:"foreignKey:ClassID"`
 }

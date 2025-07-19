@@ -11,7 +11,7 @@ func UserRoutes(route *gin.Engine) {
 	users := route.Group("/users")
 
 	// Public user routes
-	users.POST("/login", handlers.LoginUser)
+	route.POST("/login", handlers.LoginUser)
 	users.POST("", handlers.CreateUser)
 
 	// Protected user routes
