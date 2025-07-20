@@ -11,11 +11,11 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - DB_USER=${MYSQL_ADDON_USER}
-      - DB_PASS=${MYSQL_ADDON_PASSWORD}
-      - DB_HOST=${MYSQL_ADDON_HOST}
-      - DB_PORT=${MYSQL_ADDON_PORT}
-      - DB_NAME=${MYSQL_ADDON_DB}
+      - MYSQL_ADDON_USER=${MYSQL_ADDON_USER}
+      - MYSQL_ADDON_PASSWORD=${MYSQL_ADDON_PASSWORD}
+      - MYSQL_ADDON_HOST=${MYSQL_ADDON_HOST}
+      - MYSQL_ADDON_PORT=${MYSQL_ADDON_PORT}
+      - MYSQL_ADDON_DB=${MYSQL_ADDON_DB}
     depends_on:
       mysql:
         condition: service_healthy
