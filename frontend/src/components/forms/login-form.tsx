@@ -80,6 +80,7 @@ export function LoginForm() {
 
       // Redirects user to home page once login is successful
       router.push('/home');
+      setLoading(false);
     } catch (err: unknown) {
       // Handle errors from the login API
 
@@ -88,8 +89,6 @@ export function LoginForm() {
       } else {
         setError('Login failed');
       }
-    } finally {
-      setLoading(false);
     }
   };
 
