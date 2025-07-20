@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Round Strike ®',
+  title: 'Round Strike',
   description: 'RPG Turn-Based Game',
 };
 
