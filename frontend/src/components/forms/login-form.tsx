@@ -175,6 +175,7 @@ export function LoginForm() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
@@ -191,6 +192,7 @@ export function LoginForm() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
@@ -207,6 +209,7 @@ export function LoginForm() {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
