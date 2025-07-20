@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { useUserStore } from '@/stores/user';
 import type { User } from '@/types/user';
 import { jwtDecode } from 'jwt-decode';
@@ -15,7 +14,7 @@ import LoadingButton from '../ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
-export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loginData, setLoginData] = useState({
@@ -95,10 +94,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
   };
 
   return (
-    <div
-      className={cn('flex flex-col gap-6', className)}
-      {...props}
-    >
+    <div className="w-full bg-muted flex flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 gap-6">
       <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
