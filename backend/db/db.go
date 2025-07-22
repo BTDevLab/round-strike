@@ -14,11 +14,11 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	user := os.Getenv("DB_USER")
-	pass := os.Getenv("DB_PASS")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	name := os.Getenv("DB_NAME")
+	user := os.Getenv("MYSQL_ADDON_USER")
+	pass := os.Getenv("MYSQL_ADDON_PASSWORD")
+	host := os.Getenv("MYSQL_ADDON_HOST")
+	port := os.Getenv("MYSQL_ADDON_PORT")
+	name := os.Getenv("MYSQL_ADDON_DB")
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, pass, host, port, name)
 

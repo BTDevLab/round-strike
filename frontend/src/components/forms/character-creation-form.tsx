@@ -68,9 +68,14 @@ export default function CharacterCreationForm({
       onCharacterCreated();
       onCloseDialog();
       toast.success(`${characterName} is ready for battle!`);
-    } catch (error: any) {
-      console.error('Error creating character:', error);
-      setError(error.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Failed to fetch character:', err);
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred.');
+      }
+      setLoading(false);
       toast.error(`Failed to create your character`);
     }
   };
@@ -104,8 +109,13 @@ export default function CharacterCreationForm({
         if (fetchedClasses.length > 0) {
           setCharacterClass(fetchedClasses[0].name.toLowerCase());
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Failed to fetch classes:', err);
+          setError(err.message);
+        } else {
+          setError('An unexpected error occurred.');
+        }
         setLoading(false);
       }
     };
