@@ -27,21 +27,25 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-purple-400 text-purple-600 hover:bg-purple-200 hover:text-purple-800 px-8 py-3 cursor-pointer"
-                >
-                  <Pencil className="h-5 w-5" />
-                  <Link href="/register">Create your account</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 cursor-pointer"
-                >
-                  <LogIn className="h-5 w-5" />
-                  <Link href="/login">Login</Link>
-                </Button>
+                <Link href="/register">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-purple-400 text-purple-600 hover:bg-purple-200 hover:text-purple-800 px-8 py-3 cursor-pointer"
+                  >
+                    <Pencil className="h-5 w-5" />
+                    Create your account
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 cursor-pointer"
+                  >
+                    <LogIn className="h-5 w-5" />
+                    Login
+                  </Button>
+                </Link>
               </div>
               <div className="flex items-center gap-4 mt-6 text-sm text-gray-400">
                 <div className="flex items-center gap-1">

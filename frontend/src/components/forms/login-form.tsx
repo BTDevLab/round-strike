@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { useUserStore } from '@/stores/user';
 import type { User } from '@/types/user';
 import { jwtDecode } from 'jwt-decode';
@@ -15,7 +14,7 @@ import LoadingButton from '../ui/LoadingButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
-export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loginData, setLoginData] = useState({
@@ -81,6 +80,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
       // Redirects user to home page once login is successful
       router.push('/home');
+      setLoading(false);
     } catch (err: unknown) {
       // Handle errors from the login API
 
@@ -89,16 +89,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       } else {
         setError('Login failed');
       }
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div
-      className={cn('flex flex-col gap-6', className)}
-      {...props}
-    >
+    <div className="w-full bg-muted flex flex-col items-center justify-center p-6 md:p-10 bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 gap-6">
       <Card className="overflow-hidden p-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
@@ -179,6 +174,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
@@ -195,6 +191,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
@@ -211,6 +208,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 text-lg font-semibold cursor-pointer"
                 >
                   <svg
+                    className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >
