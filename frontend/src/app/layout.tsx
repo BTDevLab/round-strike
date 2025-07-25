@@ -28,14 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="min-h-screen flex flex-col bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-900">
+        <div className="min-h-screen flex flex-col">
           <Toaster
             position="top-center"
             expand={true}
             richColors
           />
           <Header />
-          <main className="flex-1 flex flex-col">{children}</main>
+          <main className="flex flex-1 flex-col justify-center">{children}</main>
           <Footer />
         </div>
       </body>

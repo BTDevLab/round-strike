@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <section className="flex flex-1 flex-col justify-center w-full bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <section className="flex flex-1 flex-col justify-center w-full bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20" />
       <div className="container px-4 md:px-6 relative z-10 py-8 md:py-12">
         <div className="flex flex-col items-center space-y-4 text-center">
