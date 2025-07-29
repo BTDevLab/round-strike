@@ -176,7 +176,7 @@ export default function CharacterOverview() {
                 <CardHeader>
                   <div className="flex flex-col items-center gap-6">
                     <Image
-                      src="/placeholder.svg?height=100&width=100"
+                      src={'/default-avatar.png'}
                       width={100}
                       height={100}
                       alt="Character Avatar"
@@ -339,7 +339,7 @@ export default function CharacterOverview() {
                             .map((weapon) => (
                               <Card
                                 key={weapon.id}
-                                className="bg-black/40 border-purple-500/30"
+                                className="bg-black/40 border-purple-500/30 hover:bg-black/60 transition-colors cursor-pointer p-0"
                               >
                                 <CardContent className="p-4">
                                   <div className="flex items-center justify-between">
@@ -382,7 +382,7 @@ export default function CharacterOverview() {
                             .map((armor) => (
                               <Card
                                 key={armor.id}
-                                className="bg-black/40 border-purple-500/30"
+                                className="bg-black/40 border-purple-500/30 hover:bg-black/60 transition-colors cursor-pointer p-0"
                               >
                                 <CardContent className="p-4">
                                   <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ export default function CharacterOverview() {
                         {skills.map((skill) => (
                           <Card
                             key={skill.id}
-                            className="bg-black/40 border-purple-500/30"
+                            className="bg-black/40 border-purple-500/30 hover:bg-black/60 transition-colors cursor-pointer p-0"
                           >
                             <CardContent className="p-4">
                               <div className="flex items-center justify-between mb-2">
