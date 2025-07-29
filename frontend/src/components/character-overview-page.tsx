@@ -189,7 +189,7 @@ export default function CharacterOverview() {
       prev.map((item) => {
         if (item.id === itemId) {
           // Unequip other items of the same type
-          const updatedInventory = prev.map((i) =>
+          prev.map((i) =>
             i.type === item.type && i.id !== itemId ? { ...i, equipped: false } : i,
           );
           return { ...item, equipped: !item.equipped };
