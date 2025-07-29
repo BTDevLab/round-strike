@@ -157,11 +157,10 @@ export default function CharacterOverview() {
   };
 
   return (
-    <div className="flex flex-1 flex-col bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+    <div className="flex flex-1 flex-col justify-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 p-4 md:p-8">
         <div className="max-w-6xl mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row gap-6 w-full">
-            {/* Character Info Header à esquerda */}
             <div className="w-full md:w-1/3">
               <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 h-full">
                 <CardHeader>
@@ -211,7 +210,6 @@ export default function CharacterOverview() {
                 </CardHeader>
               </Card>
             </div>
-            {/* Tabs à direita */}
             <div className="w-full md:w-2/3">
               <Tabs
                 value={activeTab}
@@ -238,7 +236,6 @@ export default function CharacterOverview() {
                     Skills
                   </TabsTrigger>
                 </TabsList>
-                {/* Inventory Tab */}
                 <TabsContent
                   value="inventory"
                   className="space-y-4"
@@ -305,7 +302,6 @@ export default function CharacterOverview() {
                     </CardContent>
                   </Card>
                 </TabsContent>
-                {/* Equipment Tab */}
                 <TabsContent
                   value="equipment"
                   className="space-y-4"
@@ -362,7 +358,6 @@ export default function CharacterOverview() {
                               </Card>
                             ))}
                         </div>
-                        {/* Armor Slot */}
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                             <Shield className="h-5 w-5" />
@@ -409,7 +404,6 @@ export default function CharacterOverview() {
                     </CardContent>
                   </Card>
                 </TabsContent>
-                {/* Skills Tab */}
                 <TabsContent
                   value="skills"
                   className="space-y-4"
@@ -475,7 +469,6 @@ export default function CharacterOverview() {
               </Tabs>
             </div>
           </div>
-          {/* Battle Start Section alinhado embaixo */}
           <div className="w-full">
             <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30">
               <CardContent className="p-2">
