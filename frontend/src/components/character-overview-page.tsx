@@ -11,10 +11,12 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Plus, Shield, Star, Sword } from 'lucide-react';
+import { useCharacterStore } from '@/stores/character';
+import { Loader2, Play, Plus, Shield, Star, Sword } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Item {
   id: number;
@@ -39,8 +41,19 @@ interface Skill {
   effect?: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+
 export default function CharacterOverview() {
+  const { id: characterId } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('inventory');
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const {
+    state: { selectedCharacter },
+    actions: { setSelectedCharacter },
+  } = useCharacterStore();
+  console.log('🚀 ~ CharacterOverview ~ selectedCharacter:', selectedCharacter);
 
   // Mock data for inventory
   const [inventory, setInventory] = useState<Item[]>([
@@ -116,6 +129,45 @@ export default function CharacterOverview() {
     },
   ]);
 
+  const getSelectedCharacter = useCallback(
+    async (token: string) => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`${API_URL}/characters/${characterId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const { ok, message } = await res.json();
+
+        if (!ok) {
+          throw new Error(message || 'Failed to fetch character');
+        }
+
+        setSelectedCharacter(message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Failed to fetch character:', err);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setSelectedCharacter, characterId],
+  );
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      getSelectedCharacter(token);
+    } else {
+      setIsLoading(false);
+    }
+  }, [getSelectedCharacter]);
+
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'common':
@@ -155,6 +207,14 @@ export default function CharacterOverview() {
       ),
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex w-screen items-center justify-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
+        <Loader2 className="h-16 w-16 animate-spin text-purple-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col justify-center bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
