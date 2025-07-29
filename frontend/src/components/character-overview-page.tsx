@@ -254,7 +254,7 @@ export default function CharacterOverview() {
                         <div>
                           <p className="text-sm text-gray-400">Mana</p>
                           <Progress
-                            value={80}
+                            value={100}
                             className="h-2 bg-gray-700"
                           />
                           <p className="text-xs text-white">
