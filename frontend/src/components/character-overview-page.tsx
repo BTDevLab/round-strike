@@ -53,7 +53,8 @@ export default function CharacterOverview() {
     state: { selectedCharacter },
     actions: { setSelectedCharacter },
   } = useCharacterStore();
-  console.log('🚀 ~ CharacterOverview ~ selectedCharacter:', selectedCharacter);
+  const { name, hp, maxHP, mp, maxMP, strength, defense, level } =
+    selectedCharacter || {};
 
   // Mock data for inventory
   const [inventory, setInventory] = useState<Item[]>([
@@ -234,10 +235,10 @@ export default function CharacterOverview() {
                     />
                     <div className="w-full">
                       <CardTitle className="text-2xl text-white text-center md:text-left">
-                        Chafundiffornio
+                        {name}
                       </CardTitle>
                       <CardDescription className="text-gray-300 text-center md:text-left">
-                        Knight - Level 1
+                        Knight - Level {level}
                       </CardDescription>
                       <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-4">
                         <div>
@@ -246,7 +247,9 @@ export default function CharacterOverview() {
                             value={100}
                             className="h-2 bg-gray-700"
                           />
-                          <p className="text-xs text-white">100/100</p>
+                          <p className="text-xs text-white">
+                            {hp}/{maxHP}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Mana</p>
@@ -254,15 +257,17 @@ export default function CharacterOverview() {
                             value={80}
                             className="h-2 bg-gray-700"
                           />
-                          <p className="text-xs text-white">80/100</p>
+                          <p className="text-xs text-white">
+                            {mp}/{maxMP}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Attack</p>
-                          <p className="text-lg font-bold text-white">45</p>
+                          <p className="text-lg font-bold text-white">{strength}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Defense</p>
-                          <p className="text-lg font-bold text-white">25</p>
+                          <p className="text-lg font-bold text-white">{defense}</p>
                         </div>
                       </div>
                     </div>
