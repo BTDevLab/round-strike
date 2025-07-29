@@ -166,7 +166,7 @@ export default function CharacterOverview() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900 text-white">
+    <div className="flex flex-1 flex-col bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
       <main className="flex-1 p-4 md:p-8">
         <div className="max-w-6xl mx-auto flex flex-col gap-4">
           <div className="flex flex-col md:flex-row gap-6 w-full">
