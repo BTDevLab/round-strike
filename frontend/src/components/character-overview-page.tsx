@@ -114,15 +114,6 @@ export default function CharacterOverview() {
       description: 'Restores health over time',
       manaCost: 15,
     },
-    {
-      id: 4,
-      name: 'Fire Strike',
-      level: 1,
-      maxLevel: 4,
-      description: 'Elemental fire damage',
-      manaCost: 20,
-      damage: 40,
-    },
   ]);
 
   const getRarityColor = (rarity: string) => {
@@ -431,7 +422,7 @@ export default function CharacterOverview() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         {skills.map((skill) => (
                           <Card
                             key={skill.id}
