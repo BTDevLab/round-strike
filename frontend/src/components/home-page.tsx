@@ -149,17 +149,23 @@ export default function HomePage() {
                           </CardDescription>
                         </Card>
                       </div>
+                      <Link
+                        href={`/game/${char.ID}`}
+                        passHref
+                      >
+                        <Button
+                          asChild
+                          className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200 mt-2"
+                        >
+                          <span>Start Game</span>
+                        </Button>
+                      </Link>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
                 <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
                 <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-transparent border-none shadow-none hover:bg-purple-700/30 p-2 cursor-pointer text-gray-300 hover:text-white" />
               </Carousel>
-              <Link href="">
-                <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white text-md px-6 py-3 rounded-lg cursor-pointer transition-colors duration-200 mt-2">
-                  Start Game
-                </Button>
-              </Link>
             </div>
           )}
 
