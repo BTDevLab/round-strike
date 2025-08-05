@@ -10,7 +10,7 @@ export default function Header() {
   } = useUserStore();
 
   return (
-    <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-sm bg-black/20 border-b border-purple-500/20">
+    <header className="px-4 lg:px-6 h-16 flex items-center backdrop-blur-sm bg-black/20 border-b border-yellow-700/30 bg-gradient-to-b from-[#5b3a1b] via-[#8d5524] to-[#c68642]">
       <Link
         href="/"
         className="flex items-center justify-center"
@@ -28,7 +28,7 @@ export default function Header() {
         {!user && (
           <Link
             href="/register"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className="text-sm font-medium text-white hover:text-white transition-colors"
           >
             Create account
           </Link>
@@ -36,14 +36,14 @@ export default function Header() {
         {user ? (
           <Link
             href="/login"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className="text-sm font-medium text-white hover:text-white transition-colors"
           >
             Logout
           </Link>
         ) : (
           <Link
             href="/login"
-            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className="text-sm font-medium text-white hover:text-white transition-colors"
           >
             Login
           </Link>

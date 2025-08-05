@@ -10,9 +10,13 @@ export type Character = {
   level: number;
   experience: number;
   hp: number;
+  maxHP: number;
   mp: number;
+  maxMP: number;
   userId: string;
   class_id: string;
   class: Class;
   characterStats: CharacterStats;
+  strength: number;
+  defense: number;
 };

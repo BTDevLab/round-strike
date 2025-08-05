@@ -3,14 +3,17 @@ import { create } from "zustand";
 
 type CharacterState = {
   characters: Character[] | [];
+  selectedCharacter: Character | null;
 };
 
 type CharacterActions = {
   setCharacters: (characters: Character[] | []) => void;
+  setSelectedCharacter: (character: Character | null) => void;
 };
 
 const initialState: CharacterState = {
   characters: [],
+  selectedCharacter: null,
 };
 
 export const useCharacterStore = create<{
@@ -21,5 +24,9 @@ export const useCharacterStore = create<{
   actions: {
     setCharacters: (characters) =>
       set((store) => ({ state: { ...store.state, characters } })),
+    setSelectedCharacter: (character) =>
+      set((store) => ({
+        state: { ...store.state, selectedCharacter: character },
+      })),
   },
 }));
